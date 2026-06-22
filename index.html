@@ -29,10 +29,10 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--paper);color:var(--indigo);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--paper);color:var(--indigo);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit}
 img{max-width:100%}
-.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(18px,5vw,56px)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(22px,5vw,56px)}
 .mark{display:inline-block;fill:currentColor;vertical-align:middle;height:auto}
 
 /* nav */
@@ -112,9 +112,27 @@ img{max-width:100%}
   .ship-grid{grid-template-columns:1fr 1fr}
 }
 @media (max-width:560px){
-  .nav .brand-name{font-size:26px}
+  .nav .brand-name{font-size:24px}
+  .nav .mark{width:38px}
+  .nav .btn{padding:8px 12px;font-size:12px;letter-spacing:.08em}
   .grid4{grid-template-columns:1fr}
   .ship-grid{grid-template-columns:1fr}
+  .band{letter-spacing:.2em;font-size:13px;padding:18px 16px}
+  .ship-title{font-size:11px;letter-spacing:.08em;overflow-wrap:break-word}
+  .lockup{gap:12px}
+  .lockup .mark{width:clamp(50px,15vw,84px)}
+  .btn-row{flex-direction:column;align-items:stretch}
+  .btn-row .btn{width:100%}
+}
+@media (max-width:400px){
+  .nav .brand-name{font-size:21px}
+  .nav .mark{width:34px}
+  .nav .btn{font-size:11px;padding:8px 10px;letter-spacing:.05em}
+  .lockup h1{font-size:54px}
+  .lockup .mark{width:46px}
+  .eyebrow{font-size:12px;letter-spacing:.18em}
+  .actions{flex-direction:column}
+  .actions .btn{width:100%}
 }
 @media (prefers-reduced-motion:no-preference){
   .reveal{opacity:0;transform:translateY(14px);animation:rise .7s ease forwards}
