@@ -32,7 +32,7 @@ html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--indigo);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit}
 img{max-width:100%}
-.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(22px,5vw,56px)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(24px,5.5vw,56px)}
 .mark{display:inline-block;fill:currentColor;vertical-align:middle;height:auto}
 
 /* nav */
@@ -41,7 +41,7 @@ img{max-width:100%}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
 .brand-name{font-family:var(--display);font-size:30px;letter-spacing:.04em;line-height:1}
 .nav .mark{width:46px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:13px;padding:11px 18px;border:1.5px solid var(--indigo);border-radius:4px;text-decoration:none;min-height:44px;cursor:pointer;transition:transform .12s ease,background .15s ease,color .15s ease}
+.btn{display:inline-flex;align-items:center;justify-content:center;text-align:center;gap:8px;font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:13px;padding:11px 18px;border:1.5px solid var(--indigo);border-radius:4px;text-decoration:none;min-height:44px;cursor:pointer;transition:transform .12s ease,background .15s ease,color .15s ease}
 .btn:hover{transform:translateY(-1px)}
 .btn.primary{background:var(--indigo);color:var(--bone)}
 .btn.primary:hover{background:#1a262e}
@@ -52,7 +52,7 @@ img{max-width:100%}
 .nav .btn{padding:9px 14px}
 
 /* hero */
-.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,460px);gap:clamp(32px,5vw,72px);align-items:center;padding:clamp(40px,7vw,92px) 0 clamp(36px,5vw,64px)}
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,460px);gap:clamp(32px,5vw,72px);align-items:center;padding-top:clamp(40px,7vw,92px);padding-bottom:clamp(36px,5vw,64px)}
 .eyebrow{font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.26em;font-size:13px;color:var(--brown);margin:0 0 18px}
 .lockup{display:flex;align-items:center;gap:clamp(10px,2vw,20px);line-height:.8}
 .lockup h1{font-family:var(--display);font-weight:400;font-size:clamp(66px,13vw,140px);letter-spacing:.02em;margin:0;color:var(--indigo)}
@@ -68,7 +68,7 @@ img{max-width:100%}
 .band{background:var(--indigo);color:var(--bone);text-align:center;padding:22px 18px;font-family:var(--label);text-transform:uppercase;letter-spacing:.34em;font-size:clamp(13px,2vw,17px)}
 
 /* decoded */
-.section{padding:clamp(44px,6vw,80px) 0}
+.section{padding-block:clamp(44px,6vw,80px)}
 .section-head{max-width:60ch}
 .section h2{font-family:var(--display);font-weight:400;font-size:clamp(40px,6vw,72px);letter-spacing:.02em;line-height:.95;margin:0 0 14px}
 .section-head p{font-size:clamp(16px,1.8vw,19px);color:var(--ink-soft);margin:0}
@@ -82,7 +82,7 @@ img{max-width:100%}
 
 /* shop panel */
 .shop{background:var(--indigo);color:var(--bone)}
-.shop-in{padding:clamp(40px,6vw,72px) 0}
+.shop-in{padding-block:clamp(40px,6vw,72px)}
 .shop h2{font-family:var(--display);font-weight:400;font-size:clamp(38px,5.5vw,64px);letter-spacing:.02em;line-height:.95;margin:0 0 14px;color:var(--bone)}
 .shop .lead{margin:0;max-width:58ch;color:#cdd3d6;font-size:clamp(15px,1.7vw,17px)}
 .ship-title{font-family:var(--label);text-transform:uppercase;letter-spacing:.16em;font-size:13px;color:#9fa9ae;margin:32px 0 14px}
@@ -119,6 +119,7 @@ img{max-width:100%}
   .ship-grid{grid-template-columns:1fr}
   .band{letter-spacing:.2em;font-size:13px;padding:18px 16px}
   .ship-title{font-size:11px;letter-spacing:.08em;overflow-wrap:break-word}
+  .foot-tag{letter-spacing:.1em}
   .lockup{gap:12px}
   .lockup .mark{width:clamp(50px,15vw,84px)}
   .btn-row{flex-direction:column;align-items:stretch}
@@ -239,7 +240,7 @@ img{max-width:100%}
     </div>
     <div class="btn-row">
       <a class="btn bone" href="https://www.vinted.pl/member/271911480-falkafalka35" target="_blank" rel="noopener">Open the shop</a>
-      <a class="btn bone" href="https://www.vinted.pl/invite/falka.falka35" target="_blank" rel="noopener">Not on Vinted? Join now to browse FADEWELL collection</a>
+      <a class="btn bone" href="https://www.vinted.pl/invite/falka.falka35" target="_blank" rel="noopener">Not on Vinted?<br>Join now to browse FADEWELL collection</a>
     </div>
   </div>
 </section>
