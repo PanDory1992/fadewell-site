@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fadewell — Vintage Jeans &amp; Denim</title>
+<meta name="description" content="Fadewell — curated vintage jeans and denim. Every pair dated, authenticated, hand-measured and checked. Shop on Vinted; ships across the Polish cluster.">
+<meta name="theme-color" content="#24333D">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fadewell — Vintage Jeans & Denim">
+<meta property="og:description" content="Curated vintage jeans and denim. Dated, authenticated, hand-measured, checked. Shop on Vinted.">
+<meta property="og:url" content="https://fadewell.eu">
+<link rel="icon" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;600&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo:#24333D;
+  --faded:#6E7B83;
+  --bone:#E5DDD3;
+  --brown:#8F603F;
+  --paper:#EDE8DD;
+  --line:#cfc7b8;
+  --ink-soft:#46535d;
+  --display:"Bebas Neue",Impact,sans-serif;
+  --label:"Oswald",sans-serif;
+  --body:"Open Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--indigo);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img{max-width:100%}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(18px,5vw,56px)}
+.mark{display:inline-block;fill:currentColor;vertical-align:middle;height:auto}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:20;background:rgba(237,232,221,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;padding:14px clamp(18px,5vw,56px)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand-name{font-family:var(--display);font-size:30px;letter-spacing:.04em;line-height:1}
+.nav .mark{width:46px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:13px;padding:11px 18px;border:1.5px solid var(--indigo);border-radius:4px;text-decoration:none;min-height:44px;cursor:pointer;transition:transform .12s ease,background .15s ease,color .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:var(--indigo);color:var(--bone)}
+.btn.primary:hover{background:#1a262e}
+.btn.ghost{background:transparent;color:var(--indigo)}
+.btn.ghost:hover{background:rgba(36,51,61,.06)}
+.btn.bone{background:var(--bone);color:var(--indigo);border-color:var(--bone)}
+.btn.bone:hover{background:#f1ece1}
+.nav .btn{padding:9px 14px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,460px);gap:clamp(32px,5vw,72px);align-items:center;padding:clamp(40px,7vw,92px) 0 clamp(36px,5vw,64px)}
+.eyebrow{font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.26em;font-size:13px;color:var(--brown);margin:0 0 18px}
+.lockup{display:flex;align-items:center;gap:clamp(10px,2vw,20px);line-height:.8}
+.lockup h1{font-family:var(--display);font-weight:400;font-size:clamp(66px,13vw,140px);letter-spacing:.02em;margin:0;color:var(--indigo)}
+.lockup .mark{width:clamp(72px,12vw,134px)}
+.subline{font-family:var(--label);font-weight:500;text-transform:uppercase;letter-spacing:.34em;font-size:clamp(12px,1.6vw,16px);color:var(--ink-soft);margin:10px 0 0}
+.lede{font-size:clamp(17px,2vw,20px);color:var(--ink-soft);max-width:46ch;margin:26px 0 28px}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:30px}
+.pills{display:flex;flex-wrap:wrap;gap:9px;list-style:none;padding:0;margin:0}
+.pills li{font-family:var(--label);text-transform:uppercase;letter-spacing:.1em;font-size:12px;font-weight:500;color:var(--ink-soft);background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:999px;padding:7px 13px}
+.hero-img{width:100%;height:auto;display:block;border:1px solid #d8cfbe;border-radius:6px;box-shadow:0 18px 40px -24px rgba(36,51,61,.55)}
+
+/* band */
+.band{background:var(--indigo);color:var(--bone);text-align:center;padding:22px 18px;font-family:var(--label);text-transform:uppercase;letter-spacing:.34em;font-size:clamp(13px,2vw,17px)}
+
+/* decoded */
+.section{padding:clamp(44px,6vw,80px) 0}
+.section-head{max-width:60ch}
+.section h2{font-family:var(--display);font-weight:400;font-size:clamp(40px,6vw,72px);letter-spacing:.02em;line-height:.95;margin:0 0 14px}
+.section-head p{font-size:clamp(16px,1.8vw,19px);color:var(--ink-soft);margin:0}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(20px,3vw,34px);margin-top:clamp(34px,4vw,52px)}
+.feat .ic{width:56px;height:56px;border:1.5px solid var(--indigo);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.feat .ic svg{width:26px;height:26px;fill:none;stroke:var(--indigo);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.feat h3{font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:15px;margin:0 0 7px}
+.feat p{margin:0;color:var(--ink-soft);font-size:15px;line-height:1.55}
+.learn{margin-top:clamp(40px,5vw,60px);display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px}
+.learn p{font-family:var(--label);text-transform:uppercase;letter-spacing:.2em;font-size:clamp(13px,1.8vw,15px);color:var(--ink-soft);margin:0;max-width:42ch;line-height:1.7}
+
+/* shop panel */
+.shop{background:var(--indigo);color:var(--bone)}
+.shop-in{padding:clamp(40px,6vw,72px) 0}
+.shop h2{font-family:var(--display);font-weight:400;font-size:clamp(38px,5.5vw,64px);letter-spacing:.02em;line-height:.95;margin:0 0 14px;color:var(--bone)}
+.shop .lead{margin:0;max-width:58ch;color:#cdd3d6;font-size:clamp(15px,1.7vw,17px)}
+.ship-title{font-family:var(--label);text-transform:uppercase;letter-spacing:.16em;font-size:13px;color:#9fa9ae;margin:32px 0 14px}
+.ship-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:32px}
+.ship-box{border:1px solid rgba(229,221,211,.26);border-radius:6px;padding:14px 16px}
+.ship-box .r{font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.1em;font-size:12.5px;margin:0 0 6px;color:var(--bone)}
+.ship-box .c{margin:0;font-size:13.5px;line-height:1.5;color:#b6bec3}
+.btn-row{display:flex;flex-wrap:wrap;gap:12px}
+
+/* footer */
+.foot{border-top:1px solid var(--line);padding:clamp(36px,5vw,56px) 0 40px}
+.foot-grid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:28px}
+.foot .brand-name{font-size:34px}
+.foot .mark{width:52px}
+.foot-tag{font-family:var(--label);text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:var(--ink-soft);margin:12px 0 0}
+.foot-links{display:flex;flex-direction:column;gap:9px;font-family:var(--label);text-transform:uppercase;letter-spacing:.1em;font-size:13px}
+.foot-links a{text-decoration:none;color:var(--indigo)}
+.foot-links a:hover{color:var(--brown)}
+.foot-base{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--label);text-transform:uppercase;letter-spacing:.12em;font-size:11.5px;color:var(--ink-soft)}
+
+:focus-visible{outline:2.5px solid var(--brown);outline-offset:3px;border-radius:2px}
+
+@media (max-width:880px){
+  .hero{grid-template-columns:1fr}
+  .hero-visual{order:-1;max-width:440px}
+  .grid4{grid-template-columns:1fr 1fr;gap:28px}
+  .ship-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:560px){
+  .nav .brand-name{font-size:26px}
+  .grid4{grid-template-columns:1fr}
+  .ship-grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:no-preference){
+  .reveal{opacity:0;transform:translateY(14px);animation:rise .7s ease forwards}
+  .reveal.d2{animation-delay:.12s}
+  @keyframes rise{to{opacity:1;transform:none}}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="fw-mark" viewBox="0 0 1254 1254">
+    <path d="M 372 564.33 C 370.38 564.7 367.25 564.46 366 564.33 C 364.75 564.2 362.56 563.55 362 563.26 C 361.44 562.97 361.06 563.28 361.52 562 C 361.97 560.72 364.15 555.62 365.67 553 C 367.18 550.38 367.62 548.81 373.67 541 C 379.71 533.19 402.46 503.5 414 490.56 C 425.54 477.62 454.68 448.32 466 437.5 C 477.32 426.68 495.18 411.73 504.56 404 C 513.93 396.27 531.57 382.58 541 375.67 C 550.43 368.75 570.12 355.04 580 348.67 C 589.88 342.29 609.75 330.17 620 324.67 C 630.25 319.17 652 308.84 662 304.67 C 672 300.5 693.88 293.71 700 291.33 C 706.12 288.96 706.88 287.25 711 285.67 C 715.12 284.09 725.88 280.32 733 278.67 C 740.12 277.02 761.38 273.53 768 272.51 C 774.62 271.49 779.38 270.63 786 270.51 C 792.62 270.38 816 271.15 821 271.51 C 826 271.86 822.62 272.83 826 273.33 C 829.38 273.83 842.12 274.59 848 275.51 C 853.88 276.42 869.28 279.73 873 280.67 C 876.72 281.61 877.29 282.33 877.76 283 C 878.23 283.67 876.34 285.38 876.74 286 C 877.14 286.62 881.18 287.43 880.96 288 C 880.75 288.57 875.78 289.94 875 290.57 C 874.22 291.19 874.61 292.57 874.73 293 C 874.86 293.43 875.94 293.71 875.98 294 C 876.01 294.29 876.87 294.53 875 295.32 C 873.13 296.11 866.12 298.91 861 300.33 C 855.88 301.75 838.75 305.24 834 306.67 C 829.25 308.1 824.41 310.82 823 311.73 C 821.59 312.65 822.62 313.66 822.74 314 C 822.87 314.34 822.38 314.61 824 314.48 C 825.62 314.36 837.17 311.64 835.67 313 C 834.17 314.36 817.08 323.11 812 325.33 C 806.92 327.55 797.07 329.53 795 330.74 C 792.93 331.95 795.91 334.18 795.41 335 C 794.91 335.82 795.93 335.16 791 337.33 C 786.07 339.49 763.38 349.41 756 352.33 C 748.62 355.25 739.38 357.67 732 360.67 C 724.62 363.67 705.5 372.83 697 376.33 C 688.5 379.83 670.38 385.67 664 388.67 C 657.62 391.67 652.5 396.58 646 400.33 C 639.5 404.08 631.5 407.62 612 418.67 C 592.5 429.71 514.25 474.17 490 488.67 C 465.75 503.17 431.88 525.58 418 534.67 C 404.12 543.75 384.75 557.63 379 561.33 C 373.25 565.04 373.62 563.96 372 564.33 Z"/>
+    <path d="M 374 729.33 C 371.62 729.69 366.16 728.54 365 728.25 C 363.84 727.96 364.22 728.03 364.68 727 C 365.14 725.97 366.38 723.06 368.67 720 C 370.96 716.94 376.08 710 383 702.56 C 389.92 695.12 411.93 671.95 424 660.5 C 436.07 649.06 468.31 620.48 479.56 611 C 490.81 601.52 504.07 591.83 514 584.67 C 523.93 577.5 546.88 561.17 559 553.67 C 571.12 546.17 600.38 530.3 611 524.67 C 621.62 519.05 634.38 512.79 644 508.67 C 653.62 504.54 677.62 495.17 688 491.67 C 698.38 488.17 717.25 482.82 727 480.67 C 736.75 478.52 759.88 475.4 766 474.51 C 772.12 473.61 773.88 473.5 776 473.5 C 778.12 473.5 778.5 474.86 783 474.49 C 787.5 474.11 804.62 470.88 812 470.51 C 819.38 470.13 837.25 471.23 842 471.51 C 846.75 471.79 848.88 472.27 850 472.74 C 851.12 473.21 850.38 474.81 851 475.26 C 851.62 475.71 853 476.17 855 476.33 C 857 476.49 862.62 475.84 867 476.51 C 871.38 477.17 883.38 479.9 890 481.67 C 896.62 483.44 914.71 488.5 920 490.67 C 925.29 492.84 930.66 496.71 932.33 499 C 933.99 501.29 934.24 507.21 933.33 509 C 932.41 510.79 927.67 512.52 925 513.33 C 922.33 514.14 916 515.1 912 515.49 C 908 515.89 899.5 515.73 893 516.51 C 886.5 517.28 864.75 520.9 860 521.67 C 855.25 522.44 855.91 522.38 855 522.67 C 854.09 522.96 853.11 523.55 852.74 524 C 852.36 524.45 852.47 525.84 852 526.26 C 851.53 526.68 854 526.2 849 527.33 C 844 528.46 817.38 534.29 812 535.33 C 806.62 536.37 809.12 534.67 806 535.67 C 802.88 536.67 801.88 538.58 787 543.33 C 772.12 548.08 707.62 566.75 687 573.67 C 666.38 580.59 635.75 593.04 622 598.67 C 608.25 604.29 597.12 608.8 577 618.67 C 556.88 628.54 482.88 665.92 461 677.67 C 439.12 689.42 411.62 706.71 402 712.67 C 392.38 718.62 387.5 723.25 384 725.33 C 380.5 727.42 376.38 728.97 374 729.33 Z"/>
+    <path d="M 371 901.1 C 369 900.96 365.79 899.02 365 898.26 C 364.21 897.5 363.67 896.96 364.67 895 C 365.67 893.04 370.15 886.31 373 882.56 C 375.85 878.81 381.43 871.44 387.5 865 C 393.57 858.56 412.55 839.38 421.56 831 C 430.57 822.62 452.13 804.17 459.56 798 C 466.99 791.83 475.19 785.83 481 781.67 C 486.81 777.5 496.38 770.29 506 764.67 C 515.62 759.04 545.12 742.92 558 736.67 C 570.88 730.42 595.75 719.79 609 714.67 C 622.25 709.54 651.88 699.29 664 695.67 C 676.12 692.04 693.25 688.07 706 685.67 C 718.75 683.27 754.38 677.65 766 676.51 C 777.62 675.36 793.12 676.26 799 676.51 C 804.88 676.75 809.25 678.24 813 678.49 C 816.75 678.74 822.5 677.48 829 678.51 C 835.5 679.53 860.38 685.08 865 686.68 C 869.62 688.27 864.38 690.39 866 691.26 C 867.62 692.13 872 691.62 878 693.67 C 884 695.72 908 705.17 914 707.67 C 920 710.17 923.25 712.06 926 713.67 C 928.75 715.27 934.33 719.21 936 720.5 C 937.67 721.79 939.11 722.94 939.33 724 C 939.54 725.06 937.39 727.88 937.74 729 C 938.08 730.12 941.65 732.12 942.09 733 C 942.53 733.88 942.15 735.16 941.26 736 C 940.38 736.84 936.03 738.95 935 739.74 C 933.97 740.53 934.5 741.86 933 742.33 C 931.5 742.8 928 743.6 923 743.5 C 918 743.4 901.88 741.63 893 741.51 C 884.12 741.38 857.5 742.01 852 742.51 C 846.5 743.01 854.62 744.74 849 745.49 C 843.38 746.24 814 747.65 807 748.51 C 800 749.36 798.62 751.43 793 752.33 C 787.38 753.23 771.38 754.13 762 755.67 C 752.62 757.21 731.88 761.42 718 764.67 C 704.12 767.92 667.62 776.79 651 781.67 C 634.38 786.54 600.75 797.92 585 803.67 C 569.25 809.42 542.12 820.17 525 827.67 C 507.88 835.17 462.62 856.66 448 863.66 C 433.38 870.66 416.38 879.21 408 883.67 C 399.62 888.12 385.62 897.15 381 899.33 C 376.38 901.51 373 901.23 371 901.1 Z"/>
+  </symbol>
+</svg>
+
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top" aria-label="Fadewell home">
+      <span class="brand-name">FADEWELL</span>
+      <svg class="mark" viewBox="0 0 1254 1254" aria-hidden="true"><use href="#fw-mark"/></svg>
+    </a>
+    <a class="btn primary" href="https://www.vinted.pl/member/271911480-falkafalka35" target="_blank" rel="noopener">Shop on Vinted</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="wrap hero">
+    <div class="hero-copy reveal">
+      <p class="eyebrow">EST. 2023 — Warsaw, Poland</p>
+      <div class="lockup">
+        <h1>FADEWELL</h1>
+        <svg class="mark" viewBox="0 0 1254 1254" aria-hidden="true"><use href="#fw-mark"/></svg>
+      </div>
+      <p class="subline">Vintage Jeans &amp; Denim</p>
+      <p class="lede">Curated vintage jeans and denim — every pair dated, authenticated, hand-measured and checked thoroughly. No mystery sizing, no guesswork. Just honest denim, with its story told.</p>
+      <div class="actions">
+        <a class="btn primary" href="https://www.vinted.pl/member/271911480-falkafalka35" target="_blank" rel="noopener">Shop on Vinted</a>
+        <a class="btn ghost" href="https://www.instagram.com/byfadewell/" target="_blank" rel="noopener">Follow @byfadewell</a>
+      </div>
+      <ul class="pills">
+        <li>220+ five-star reviews</li>
+        <li>Hand-measured flat</li>
+        <li>Checked &amp; authenticated</li>
+        <li>Ships across the EU</li>
+      </ul>
+    </div>
+
+    <div class="hero-visual reveal d2">
+      <img class="hero-img" src="hero.jpg" width="1280" height="1280" alt="Vintage denim details — fades, red tabs, buttons and inner tags across several pairs.">
+    </div>
+  </section>
+
+  <div class="band">The good kind of worn</div>
+
+  <section class="wrap section" id="decoded">
+    <div class="section-head">
+      <h2>Every pair, decoded.</h2>
+      <p>One promise runs through the whole shop: you know exactly what you're buying before it ships. The era, the fit, the flaws — all read, checked and shown.</p>
+    </div>
+    <div class="grid4">
+      <div class="feat">
+        <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></div>
+        <h3>Dated</h3>
+        <p>Era read from production details, tabs, tags and codes.</p>
+      </div>
+      <div class="feat">
+        <div class="ic"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5l4 4"/></svg></div>
+        <h3>Authenticated</h3>
+        <p>Real vintage, checked against the tells of reproductions and fakes.</p>
+      </div>
+      <div class="feat">
+        <div class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="8.5" width="16" height="7" rx="1"/><path d="M8 8.5v3M12 8.5v4M16 8.5v3"/></svg></div>
+        <h3>Hand-measured</h3>
+        <p>Making sure that what you buy will also fit. Everything, every time.</p>
+      </div>
+      <div class="feat">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M2.5 12C6 6.5 9 6 12 6 15 6 18 6.5 21.5 12 18 17.5 15 18 12 18 9 18 6 17.5 2.5 12Z"/><circle cx="12" cy="12" r="2.6"/></svg></div>
+        <h3>Honest condition</h3>
+        <p>Every fade, whisker, hem and flaw photographed in natural light.</p>
+      </div>
+    </div>
+    <div class="learn">
+      <p>Learn more about vintage denim, fits and history</p>
+      <a class="btn ghost" href="https://www.instagram.com/byfadewell/" target="_blank" rel="noopener">Follow @byfadewell</a>
+    </div>
+  </section>
+</main>
+
+<div class="band">Fade into better</div>
+
+<section class="shop">
+  <div class="wrap shop-in">
+    <h2>The shop lives on Vinted.</h2>
+    <p class="lead">Browse current pieces, ask anything about sizing or condition, and buy with Vinted's buyer protection and bundle discounts.</p>
+    <p class="ship-title">Integrated Vinted shipping to Polish cluster countries</p>
+    <div class="ship-grid">
+      <div class="ship-box"><p class="r">Nordics</p><p class="c">Sweden, Denmark, Finland</p></div>
+      <div class="ship-box"><p class="r">Baltics</p><p class="c">Lithuania, Latvia, Estonia</p></div>
+      <div class="ship-box"><p class="r">Central Europe</p><p class="c">Poland, Slovakia, Czechia, Hungary, Romania</p></div>
+      <div class="ship-box"><p class="r">Balkans</p><p class="c">Slovenia, Croatia</p></div>
+    </div>
+    <div class="btn-row">
+      <a class="btn bone" href="https://www.vinted.pl/member/271911480-falkafalka35" target="_blank" rel="noopener">Open the shop</a>
+      <a class="btn bone" href="https://www.vinted.pl/invite/falka.falka35" target="_blank" rel="noopener">Not on Vinted? Join now to browse FADEWELL collection</a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand" style="gap:10px">
+          <span class="brand-name">FADEWELL</span>
+          <svg class="mark" viewBox="0 0 1254 1254" aria-hidden="true"><use href="#fw-mark"/></svg>
+        </div>
+        <p class="foot-tag">Vintage Jeans &amp; Denim. Measured. Checked. Worn well.</p>
+      </div>
+      <nav class="foot-links" aria-label="Footer">
+        <a href="https://www.vinted.pl/member/271911480-falkafalka35" target="_blank" rel="noopener">Shop on Vinted</a>
+        <a href="https://www.instagram.com/byfadewell/" target="_blank" rel="noopener">Instagram @byfadewell</a>
+        <a href="https://share.google/fnyhYT1W28vR7XISJ" target="_blank" rel="noopener">Google profile</a>
+        <a href="mailto:hello@fadewell.eu">hello@fadewell.eu</a>
+      </nav>
+    </div>
+    <div class="foot-base">© 2026 Fadewell · EST. 2023 — Warsaw, Poland.</div>
+  </div>
+</footer>
+
+</body>
+</html>
