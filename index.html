@@ -64,8 +64,9 @@ img{max-width:100%}
 .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-self:flex-start;width:min(100%,390px);margin:0 0 30px 30px;gap:12px}
 .actions .btn{width:100%}
 .pills{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-self:flex-start;width:min(100%,390px);gap:9px;list-style:none;padding:0;margin:0 0 0 30px}
-.pills li{font-family:var(--label);text-transform:uppercase;letter-spacing:.1em;font-size:12px;font-weight:500;color:var(--ink-soft);background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:999px;padding:7px 13px}
-.hero-img{width:100%;height:auto;display:block;border:1px solid #d8cfbe;border-radius:6px;box-shadow:0 18px 40px -24px rgba(36,51,61,.55)}
+.pills li{font-family:var(--label);text-transform:uppercase;letter-spacing:.1em;font-size:12px;font-weight:500;text-align:center;color:var(--ink-soft);background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:999px;padding:7px 13px}
+.hero-frame{position:relative;overflow:hidden;border:1px solid #d8cfbe;border-radius:6px;box-shadow:0 18px 40px -24px rgba(36,51,61,.55);aspect-ratio:1/1;background:#d8cfbe}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
 
 /* band */
 .band{background:var(--indigo);color:var(--bone);text-align:center;padding:22px 18px;font-family:var(--label);text-transform:uppercase;letter-spacing:.34em;font-size:clamp(13px,2vw,17px)}
@@ -90,7 +91,7 @@ img{max-width:100%}
 .shop .lead{margin:0;max-width:58ch;color:#cdd3d6;font-size:clamp(15px,1.7vw,17px)}
 .ship-title{font-family:var(--label);text-transform:uppercase;letter-spacing:.16em;font-size:13px;color:#9fa9ae;margin:32px 0 14px}
 .ship-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:32px}
-.ship-box{border:1px solid rgba(229,221,211,.26);border-radius:6px;padding:14px 16px}
+.ship-box{border:1px solid rgba(229,221,211,.26);border-radius:6px;padding:14px 16px;text-align:center}
 .ship-box .r{font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.1em;font-size:12.5px;margin:0 0 6px;color:var(--bone)}
 .ship-box .c{margin:0;font-size:13.5px;line-height:1.5;color:#b6bec3}
 .btn-row{display:flex;flex-wrap:wrap;gap:12px}
@@ -102,7 +103,7 @@ img{max-width:100%}
 .foot-links{display:flex;flex-direction:column;gap:9px;font-family:var(--label);text-transform:uppercase;letter-spacing:.1em;font-size:13px}
 .foot-links a{text-decoration:none;color:var(--indigo)}
 .foot-links a:hover{color:var(--brown)}
-.foot-base{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--label);text-transform:uppercase;letter-spacing:.12em;font-size:11.5px;color:var(--ink-soft)}
+.foot-base{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--label);text-transform:uppercase;letter-spacing:.12em;font-size:11.5px;color:var(--brown)}
 
 :focus-visible{outline:2.5px solid var(--brown);outline-offset:3px;border-radius:2px}
 
@@ -137,7 +138,28 @@ img{max-width:100%}
 @media (prefers-reduced-motion:no-preference){
   .reveal{opacity:0;transform:translateY(14px);animation:rise .7s ease forwards}
   .reveal.d2{animation-delay:.12s}
+  .hero-img:first-child{animation:heroFadeOne 18s ease-in-out infinite}
+  .hero-img:nth-child(2){animation:heroFadeTwo 18s ease-in-out infinite}
+  .hero-img:nth-child(3){animation:heroFadeThree 18s ease-in-out infinite}
   @keyframes rise{to{opacity:1;transform:none}}
+  @keyframes heroFadeOne{
+    0%,27%{opacity:1}
+    33%,94%{opacity:0}
+    100%{opacity:1}
+  }
+  @keyframes heroFadeTwo{
+    0%,27%{opacity:0}
+    33%,60%{opacity:1}
+    66%,100%{opacity:0}
+  }
+  @keyframes heroFadeThree{
+    0%,60%{opacity:0}
+    66%,94%{opacity:1}
+    100%{opacity:0}
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .hero-img:nth-child(n+2){display:none}
 }
 </style>
 </head>
@@ -184,7 +206,11 @@ img{max-width:100%}
     </div>
 
     <div class="hero-visual reveal d2">
-      <img class="hero-img" src="hero.jpg" width="1280" height="1280" alt="Vintage denim details &mdash; fades, red tabs, buttons and inner tags across several pairs.">
+      <div class="hero-frame" role="img" aria-label="Vintage denim details &mdash; fades, red tabs, buttons and inner tags across several pairs.">
+        <img class="hero-img" src="hero.jpg" width="1280" height="1280" alt="">
+        <img class="hero-img" src="hero2.jpg" width="1280" height="1280" alt="">
+        <img class="hero-img" src="hero3.jpg" width="1280" height="1280" alt="">
+      </div>
     </div>
   </section>
 
