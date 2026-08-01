@@ -35,8 +35,10 @@ assert.doesNotMatch(app,/Shop on Vinted/,'footer must not include a Shop on Vint
 const css=readFileSync(new URL('storefront.css',import.meta.url),'utf8');
 assert.match(css,/heroCopyText 10s/,'hero copy and logo must alternate every five seconds');
 assert.match(css,/\.hero \.lede,\.decoded-head>p\{font-size:clamp\(16px,1\.8vw,19px\)/,'hero and decoded paragraphs must share the same font size');
-assert.match(css,/translateX\(-115%\)/,'hero message must slide fully off-frame');
-assert.doesNotMatch(css,/@keyframes heroCopy(?:Text|Logo)[^}]*opacity:0/,'hero slider must not ghost through an opacity crossfade');
+assert.match(css,/@keyframes heroCopyText\{0%,38%\{opacity:1\}46%,92%\{opacity:0\}/,'hero message must fade out cleanly');
+assert.match(css,/@keyframes heroCopyLogo\{0%,46%\{opacity:0\}54%,86%\{opacity:1\}/,'hero logo must fade in cleanly');
+assert.doesNotMatch(css,/@keyframes heroCopy(?:Text|Logo)[^}]*translateX/,'hero alternation must not slide horizontally');
+assert.match(css,/\.hero-cycle-logo\{[^}]*left:50%;top:50%;width:min\(108%,620px\)[^}]*translate\(-50%,-50%\)/,'hero logo must be large and centered');
 assert.match(app,/fadewell_storefront_products/,'frontend must use the public storefront projection');
 assert.doesNotMatch(app,/service[_-]?role/i,'frontend must never contain a service-role credential');
 assert.doesNotMatch(app,/select=\*/,'frontend must request an explicit public field allowlist');
@@ -53,7 +55,15 @@ assert.match(app,/<small>Color<\/small>/,'product page must show DNA color');
 assert.match(app,/dna_origin,dna_era,dna_color/,'public query must request the new DNA display fields');
 assert.match(app,/api\.nbp\.pl\/api\/exchangerates\/rates\/a\/eur/,'EUR switch must use the official NBP average-rate API');
 assert.match(app,/data-gallery-thumbs/,'pair page must use a bounded thumbnail gallery');
+assert.match(app,/data-gallery-hero-prev/,'pair gallery must expose previous-photo navigation');
+assert.match(app,/data-gallery-hero-next/,'pair gallery must expose next-photo navigation');
+assert.match(app,/selectPhoto\(selected-1\)/,'pair gallery must return one photo at a time, including to the first photo');
+assert.match(app,/selectPhoto\(selected\+1\)/,'pair gallery must advance one photo at a time');
 assert.match(css,/\.pair-hero-photo img\{[^}]*object-fit:contain/,'pair hero photos must never be cropped');
+assert.match(css,/body\[data-page="shop"\] \.card-title\{height:3\.6em/,'shop titles must reserve equal vertical space');
+assert.match(css,/\.card-price\{margin-top:auto/,'shop prices must align at the bottom of equal card bodies');
+assert.match(css,/\.site-footer\{[^}]*margin-top:clamp\(70px,8vw,120px\)/,'footer must have breathing room from page content');
+assert.match(css,/\.footer-grid\{[^}]*align-items:center/,'footer links must align with the brand block');
 assert.match(css,/@media\(max-width:900px\)\{\.pair-grid\{grid-template-columns:1fr\}/,'pair page must stack into one column on tablet and mobile');
 assert.match(app,/String\(value\)\.trim\(\)!==''/,'Finder must compare only filled measurements');
 
