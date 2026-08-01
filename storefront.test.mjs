@@ -48,7 +48,8 @@ assert.match(app,/product\.available&&!product\.sold/,'Shop and Finder must excl
 assert.match(app,/archive\?product\.sold/,'Pair Archive must contain sold pairs');
 assert.match(app,/sort\(\(a,b\)=>\(b\.price_pln/,'home must rank by highest price');
 assert.match(app,/showPrice:page!==['"]home['"]/,'home cards must hide prices');
-assert.match(app,/L \$\{m\(product,'overall_length'\)/,'cards must label overall length as L');
+assert.doesNotMatch(app,/class="card-measures"/,'product cards must not repeat measurements beneath the title');
+assert.doesNotMatch(app,/class="card-meta"/,'product cards must keep the copy area to title and price');
 assert.doesNotMatch(app,/condition_label|vinted_category|size_label/,'product UI must not request Vinted condition, category or tagged size');
 assert.match(app,/<small>Fit<\/small>/,'product page must show fit');
 assert.match(app,/<small>Origin<\/small>/,'product page must show DNA origin');
@@ -65,6 +66,10 @@ assert.match(css,/body\[data-page="shop"\] \.card-title\{height:3\.6em/,'shop ti
 assert.match(css,/\.card-price\{margin-top:auto/,'shop prices must align at the bottom of equal card bodies');
 assert.match(css,/\.site-footer\{[^}]*margin-top:clamp\(70px,8vw,120px\)/,'footer must have breathing room from page content');
 assert.match(css,/\.footer-grid\{[^}]*align-items:center/,'footer links must align with the brand block');
+assert.match(app,/addOptions\('colour',source\.map\(displayColor\)\)/,'Shop must populate the colour filter from product data');
+assert.match(app,/addOptions\('fit',source\.map\(displayFit\)\)/,'Shop must populate the fit filter from product data');
+assert.match(app,/Number\(b\.vinted_item_id\)-Number\(a\.vinted_item_id\)/,'Newest must follow Vinted listing order rather than refresh timestamps');
+assert.match(css,/body\[data-page="shop"\] \.filters\{grid-template-columns:minmax\(150px,1\.4fr\) repeat\(5,minmax\(105px,1fr\)\) auto\}/,'desktop Shop filters must fit in one row');
 assert.match(css,/@media\(max-width:900px\)\{\.pair-grid\{grid-template-columns:1fr\}/,'pair page must stack into one column on tablet and mobile');
 assert.match(app,/String\(value\)\.trim\(\)!==''/,'Finder must compare only filled measurements');
 
