@@ -54,12 +54,14 @@ assert.match(app,/dna_origin,dna_era,dna_color/,'public query must request the n
 assert.match(app,/api\.nbp\.pl\/api\/exchangerates\/rates\/a\/eur/,'EUR switch must use the official NBP average-rate API');
 assert.match(app,/data-gallery-thumbs/,'pair page must use a bounded thumbnail gallery');
 assert.match(css,/\.pair-hero-photo img\{[^}]*object-fit:contain/,'pair hero photos must never be cropped');
+assert.match(css,/@media\(max-width:900px\)\{\.pair-grid\{grid-template-columns:1fr\}/,'pair page must stack into one column on tablet and mobile');
 assert.match(app,/String\(value\)\.trim\(\)!==''/,'Finder must compare only filled measurements');
 
 const utilsSource=readFileSync(new URL('storefront-utils.js',import.meta.url),'utf8');
 const utils=await import(`data:text/javascript;base64,${Buffer.from(utilsSource).toString('base64')}`);
 const listing=`Authentic Levi’s 535-0285 regular fit jeans, carefully checked and hand-measured by me.\nA softly faded everyday pair.\n\nMeasurements, hand-measured flat by me:\nWaist: 40 cm\nRise: 28 cm\nOne-off piece — only one available in this size.\n⭐ 200+ five-star reviews – buy with confidence.\nFast shipping, happy to answer questions.`;
 assert.equal(utils.cleanNotes(listing),'A softly faded everyday pair.','description must stop before measurements and closing clause');
+assert.equal(utils.cleanNotes('Authentic Lee jeans, carefully checked and measured by me 👖\n\nCondition: Excellent — worn, but no flaws.\nNo stains or repairs.\n\nMeasurements:\nWaist: 43 cm'),'No stains or repairs.','description must remove emoji boilerplate and Condition line');
 assert.equal(utils.displaySize({title:"Levi's 535 — W30 L30 — Made in UK"}),'W30 L30','size must come from listing text');
 assert.equal(utils.displayFit({title:'Regular straight jeans'}),'Straight');
 assert.equal(utils.displayFit({title:'Relaxed tapered jeans'}),'Relaxed Tapered');

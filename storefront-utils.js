@@ -6,7 +6,11 @@ export function cleanNotes(value){
   const measurement=/^\s*(?:[•*\-]\s*)?(?:waist|front rise|rise|inseam|inside leg|leg opening|overall length|outseam|thigh|hips?)\b/i;
   const cutAt=lines.findIndex(line=>heading.test(line)||(measurement.test(line)&&/\d/.test(line)));
   const before=(cutAt<0?lines:lines.slice(0,cutAt)).join('\n');
-  return before.replace(/\bAuthentic[^\n]*?,\s*carefully checked and (?:hand-)?measured by me\.\s*/gi,'').replace(/\n{3,}/g,'\n\n').trim();
+  return before
+    .replace(/^\s*Authentic[^\n]*carefully checked and (?:hand-)?measured by me[^\n]*\n?/gim,'')
+    .replace(/^\s*Condition\s*:[^\n]*\n?/gim,'')
+    .replace(/\n{3,}/g,'\n\n')
+    .trim();
 }
 
 function matchWaistLength(value){const match=String(value||'').match(/\bW\s*([2-6]\d)\b[\s\S]{0,32}?\bL\s*([2-4]\d)\b/i);return match?`W${match[1]} L${match[2]}`:null}
