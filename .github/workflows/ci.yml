@@ -1,0 +1,22 @@
+name: Test Storefront
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: node --check storefront.js
+      - name: Check storefront contract
+        run: node storefront.test.mjs
