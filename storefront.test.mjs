@@ -28,9 +28,12 @@ assert.match(finder,/One field is enough/,'Finder must explain partial measureme
 const app=readFileSync(new URL('storefront.js',import.meta.url),'utf8');
 assert.match(app,/Vintage Jeans &amp; Denim\. Measured\. Checked\. Worn well\./,'footer must restore original tagline');
 assert.match(app,/Google profile/,'footer must restore original links');
+assert.doesNotMatch(app,/Shop on Vinted/,'footer must not include a Shop on Vinted link');
 const css=readFileSync(new URL('storefront.css',import.meta.url),'utf8');
 assert.match(css,/heroCopyText 10s/,'hero copy and logo must alternate every five seconds');
 assert.match(css,/\.hero \.lede,\.decoded-head>p\{font-size:clamp\(16px,1\.8vw,19px\)/,'hero and decoded paragraphs must share the same font size');
+assert.match(css,/45%,95%\{opacity:0/,'hero text must fully disappear before the logo enters');
+assert.match(css,/0%,49%\{opacity:0/,'hero logo must wait until the text has disappeared');
 assert.match(app,/fadewell_storefront_products/,'frontend must use the public storefront projection');
 assert.doesNotMatch(app,/service[_-]?role/i,'frontend must never contain a service-role credential');
 assert.doesNotMatch(app,/select=\*/,'frontend must request an explicit public field allowlist');
