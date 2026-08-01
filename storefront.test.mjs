@@ -9,14 +9,40 @@ for(const page of pages){
   assert.match(html,/storefront\.js/,`${page} must use the shared storefront app`);
 }
 
+const home=readFileSync(new URL('index.html',import.meta.url),'utf8');
+assert.match(home,/data-limit="5"/,'home must request five pairs');
+assert.match(home,/Measured &middot; checked &middot; worn well/i,'home must use the approved brand line');
+assert.equal((home.match(/class="hero-img"/g)||[]).length,3,'hero must rotate three images');
+assert.match(home,/Sweden, Denmark, Finland/,'shipping countries section must be restored');
+
+const finder=readFileSync(new URL('finder.html',import.meta.url),'utf8');
+assert.doesNotMatch(finder,/<input required/i,'Finder measurements must all be optional');
+assert.match(finder,/One field is enough/,'Finder must explain partial measurement matching');
+
 const app=readFileSync(new URL('storefront.js',import.meta.url),'utf8');
 assert.match(app,/fadewell_storefront_products/,'frontend must use the public storefront projection');
 assert.doesNotMatch(app,/service[_-]?role/i,'frontend must never contain a service-role credential');
 assert.doesNotMatch(app,/select=\*/,'frontend must request an explicit public field allowlist');
-assert.match(app,/View & buy on Vinted/,'Pair Files must hand purchase off to Vinted');
-assert.match(app,/p\.available&&!p\.sold/,'Shop and Finder must exclude unavailable or sold pairs');
-assert.match(app,/archive\?p\.sold/,'Pair Archive must contain sold pairs');
+assert.match(app,/View & buy on Vinted/,'product pages must hand purchase off to Vinted');
+assert.match(app,/product\.available&&!product\.sold/,'Shop and Finder must exclude unavailable or sold pairs');
+assert.match(app,/archive\?product\.sold/,'Pair Archive must contain sold pairs');
+assert.match(app,/sort\(\(a,b\)=>\(b\.price_pln/,'home must rank by highest price');
+assert.match(app,/showPrice:page!==['"]home['"]/,'home cards must hide prices');
+assert.match(app,/L \$\{m\(product,'overall_length'\)/,'cards must label overall length as L');
+assert.doesNotMatch(app,/condition_label|vinted_category|size_label/,'product UI must not request Vinted condition, category or tagged size');
+assert.match(app,/<small>Fit<\/small>/,'product page must show fit');
+assert.match(app,/String\(value\)\.trim\(\)!==''/,'Finder must compare only filled measurements');
+
+const utilsSource=readFileSync(new URL('storefront-utils.js',import.meta.url),'utf8');
+const utils=await import(`data:text/javascript;base64,${Buffer.from(utilsSource).toString('base64')}`);
+const listing=`Authentic Levi’s 535-0285 regular fit jeans, carefully checked and hand-measured by me.\nA softly faded everyday pair.\n\nMeasurements, hand-measured flat by me:\nWaist: 40 cm\nRise: 28 cm\nOne-off piece — only one available in this size.\n⭐ 200+ five-star reviews – buy with confidence.\nFast shipping, happy to answer questions.`;
+assert.equal(utils.cleanNotes(listing),'A softly faded everyday pair.','description must stop before measurements and closing clause');
+assert.equal(utils.displaySize({title:"Levi's 535 — W30 L30 — Made in UK"}),'W30 L30','size must come from listing text');
+assert.equal(utils.displayFit({title:'Regular straight jeans'}),'Straight');
+assert.equal(utils.displayFit({title:'Relaxed tapered jeans'}),'Relaxed Tapered');
+assert.equal(utils.displaySize({dna_tagged_size:'W36 L32',title:'Jeans W30 L30'}),'W36 L32','DNA size must win over listing text');
+assert.equal(utils.displayFit({dna_fit:'Relaxed Tapered',title:'Straight jeans'}),'Relaxed Tapered','DNA fit must win over listing text');
 
 const allHtml=pages.map(page=>readFileSync(new URL(page,import.meta.url),'utf8')).join('\n');
 assert.doesNotMatch(allHtml,/<form[^>]+action=/i,'storefront must not implement a checkout form');
-console.log(`PASS: checked ${pages.length} storefront pages and the public-data contract`);
+console.log(`PASS: checked ${pages.length} storefront pages, partial Finder input, cleaned pair copy and home contracts`);
