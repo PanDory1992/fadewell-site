@@ -1,32 +1,82 @@
+import {MEASURE_LABELS,cleanNotes,displayFit,displaySize} from './storefront-utils.js';
+
 const API_URL='https://qgjkxtolyhbwpvncwtkn.supabase.co/rest/v1/fadewell_storefront_products';
 const API_KEY='sb_publishable_4I4sJO02Tudp00ALX2xbaQ_DHptnBLb';
 const VINTED_PROFILE='https://www.vinted.pl/member/271911480-falkafalka35';
-const MEASURE_LABELS={waist:'Waist, flat',rise:'Rise',inseam:'Inseam',leg_opening:'Leg opening, flat',overall_length:'Overall length',thigh:'Thigh, flat',hips:'Hips, flat'};
 let products=[];
 
 function header(){return `<div class="site-header"><nav class="nav shell" aria-label="Main navigation"><a class="wordmark" href="index.html" aria-label="FADEWELL home"><img src="fadewell-wordmark.png" alt="FADEWELL"></a><button class="mobile-toggle" aria-expanded="false">Menu</button><div class="nav-links"><a data-nav="shop" href="shop.html">Shop</a><a data-nav="finder" href="finder.html">Denim Finder</a><a data-nav="archive" href="archive.html">Pair Archive</a><a href="https://www.instagram.com/byfadewell/" target="_blank" rel="noopener">Journal ↗</a><a class="button primary nav-vinted" href="${VINTED_PROFILE}" target="_blank" rel="noopener">Vinted ↗</a></div></nav></div>`}
 function footer(){return `<div class="site-footer"><div class="shell"><div class="footer-grid"><div class="footer-brand"><img src="fadewell-wordmark.png" alt="FADEWELL"><p>Vintage jeans and trousers. Measured, checked and worn well. The storefront helps you choose; Vinted completes the purchase.</p></div><nav class="footer-links"><a href="shop.html">Shop</a><a href="finder.html">Denim Finder</a><a href="archive.html">Pair Archive</a><a href="${VINTED_PROFILE}" target="_blank" rel="noopener">Vinted</a><a href="https://www.instagram.com/byfadewell/" target="_blank" rel="noopener">Instagram</a><a href="mailto:hello@fadewell.eu">Email</a></nav></div><div class="footer-base">© 2026 FADEWELL · EST. 2023 · Warsaw, Poland</div></div></div>`}
+
 document.querySelector('[data-site-header]')?.insertAdjacentHTML('afterbegin',header());
 document.querySelector('[data-site-footer]')?.insertAdjacentHTML('afterbegin',footer());
 const page=document.body.dataset.page;
 document.querySelector(`[data-nav="${page}"]`)?.setAttribute('aria-current','page');
-document.querySelector('.mobile-toggle')?.addEventListener('click',e=>{const n=document.querySelector('.nav-links');n.classList.toggle('open');e.currentTarget.setAttribute('aria-expanded',String(n.classList.contains('open')))});
+document.querySelector('.mobile-toggle')?.addEventListener('click',event=>{const nav=document.querySelector('.nav-links');nav.classList.toggle('open');event.currentTarget.setAttribute('aria-expanded',String(nav.classList.contains('open')))});
 
-function safe(value){return String(value??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function safe(value){return String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]))}
 function money(value){return value==null?'Price on Vinted':new Intl.NumberFormat('en-GB',{style:'currency',currency:'PLN',maximumFractionDigits:0}).format(Number(value))}
 function m(product,key){return product.measurements?.[key]?.cm}
 function pairUrl(product){return `pair.html?id=${encodeURIComponent(product.vinted_item_id)}`}
-function card(product,deltas){const photo=product.photos?.[0]||'';return `<article class="product-card"><a class="card-photo" href="${pairUrl(product)}"><img loading="lazy" src="${safe(photo)}" alt="${safe(product.title||'Vintage pair')}"><span class="badge ${product.sold?'sold':''}">${product.sold?'Sold archive':safe(product.garment_type==='JEANS'?'Jeans':'Trousers')}</span></a><div class="card-body"><div class="card-meta"><span>${safe(product.brand||'Unbranded')}</span><span>${safe(product.size_label||'Measured fit')}</span></div><h3 class="card-title"><a href="${pairUrl(product)}">${safe(product.title||'Untitled pair')}</a></h3><div class="card-measures"><span>W ${m(product,'waist')??'—'} cm</span><span>R ${m(product,'rise')??'—'} cm</span><span>I ${m(product,'inseam')??'—'} cm</span></div>${deltas?`<ul class="delta-list">${deltas.map(d=>`<li>${safe(MEASURE_LABELS[d.key])}: <strong>${d.delta>0?'+':''}${d.delta.toFixed(1)} cm</strong></li>`).join('')}</ul>`:''}<p class="card-price">${product.sold?'Reference pair':money(product.price_pln)}</p></div></article>`}
 
-async function loadProducts(){const fields='vinted_item_id,title,brand,size_label,condition_label,garment_type,vinted_category,description_raw,measurements,photos,price_pln,vinted_url,available,sold,first_seen_at,last_seen_at,sold_at,updated_at';const response=await fetch(`${API_URL}?select=${fields}&order=updated_at.desc`,{headers:{apikey:API_KEY,Authorization:`Bearer ${API_KEY}`}});if(!response.ok)throw new Error(`Wardrobe unavailable (${response.status})`);return response.json()}
+function card(product,deltas,options={}){
+  const photo=product.photos?.[0]||'',showPrice=options.showPrice!==false;
+  return `<article class="product-card"><a class="card-photo" href="${pairUrl(product)}"><img loading="lazy" src="${safe(photo)}" alt="${safe(product.title||'Vintage pair')}"><span class="badge ${product.sold?'sold':''}">${product.sold?'Sold archive':safe(product.garment_type==='JEANS'?'Jeans':'Trousers')}</span></a><div class="card-body"><div class="card-meta"><span>${safe(product.brand||'Unbranded')}</span><span>${safe(displaySize(product))}</span></div><h3 class="card-title"><a href="${pairUrl(product)}">${safe(product.title||'Untitled pair')}</a></h3><div class="card-measures"><span>W ${m(product,'waist')??'—'} cm</span><span>R ${m(product,'rise')??'—'} cm</span><span>L ${m(product,'overall_length')??'—'} cm</span></div>${deltas?`<ul class="delta-list">${deltas.map(delta=>`<li>${safe(MEASURE_LABELS[delta.key])}: <strong>${delta.delta>0?'+':''}${delta.delta.toFixed(1)} cm</strong></li>`).join('')}</ul>`:''}${showPrice?`<p class="card-price">${product.sold?'Reference pair':money(product.price_pln)}</p>`:''}</div></article>`;
+}
+
+async function loadProducts(){
+  const fields='vinted_item_id,title,brand,dna_tagged_size,dna_fit,garment_type,description_raw,measurements,photos,price_pln,vinted_url,available,sold,first_seen_at,last_seen_at,sold_at,updated_at';
+  const response=await fetch(`${API_URL}?select=${fields}&order=updated_at.desc`,{headers:{apikey:API_KEY,Authorization:`Bearer ${API_KEY}`}});
+  if(!response.ok)throw new Error(`Wardrobe unavailable (${response.status})`);
+  return response.json();
+}
 function showError(node,error){node.innerHTML=`<p class="error">The wardrobe could not be loaded just now. <a href="${VINTED_PROFILE}" target="_blank" rel="noopener">Open FADEWELL on Vinted instead →</a></p>`;console.error(error)}
 
-async function renderListings(){const node=document.querySelector('[data-products]');if(!node)return;try{products=await loadProducts();const archive=page==='archive';let shown=products.filter(p=>archive?p.sold:p.available&&!p.sold);if(page==='home')shown=shown.slice(0,Number(node.dataset.limit||4));if(page==='shop')setupFilters(node,shown);else node.innerHTML=shown.length?shown.map(p=>card(p)).join(''):`<p class="empty">${archive?'The Pair Archive is being assembled.':'No published pairs are available at this moment.'}</p>`}catch(error){showError(node,error)}}
-function setupFilters(node,source){const form=document.querySelector('[data-filters]'),count=document.querySelector('[data-count]'),sort=document.querySelector('[data-sort]');const draw=()=>{const data=new FormData(form),q=String(data.get('q')||'').toLowerCase(),type=data.get('type'),waist=Number(data.get('waist')||Infinity),inseam=Number(data.get('inseam')||0);let shown=source.filter(p=>(!q||`${p.title} ${p.brand} ${p.description_raw}`.toLowerCase().includes(q))&&(!type||p.garment_type===type)&&(m(p,'waist')??Infinity)<=waist&&(m(p,'inseam')??0)>=inseam);shown.sort((a,b)=>sort.value==='price-asc'?(a.price_pln??Infinity)-(b.price_pln??Infinity):sort.value==='price-desc'?(b.price_pln??-1)-(a.price_pln??-1):sort.value==='waist'?(m(a,'waist')??Infinity)-(m(b,'waist')??Infinity):new Date(b.updated_at)-new Date(a.updated_at));count.textContent=`${shown.length} ${shown.length===1?'pair':'pairs'}`;node.innerHTML=shown.length?shown.map(p=>card(p)).join(''):'<p class="empty">No pair matches those filters. Try widening one measurement.</p>'};form.addEventListener('input',draw);form.addEventListener('reset',()=>setTimeout(draw));sort.addEventListener('change',draw);draw()}
+async function renderListings(){
+  const node=document.querySelector('[data-products]');if(!node)return;
+  try{
+    products=await loadProducts();
+    const archive=page==='archive';
+    let shown=products.filter(product=>archive?product.sold:product.available&&!product.sold);
+    if(page==='home')shown=[...shown].sort((a,b)=>(b.price_pln??-1)-(a.price_pln??-1)).slice(0,Number(node.dataset.limit||5));
+    if(page==='shop')setupFilters(node,shown);
+    else node.innerHTML=shown.length?shown.map(product=>card(product,null,{showPrice:page!=='home'})).join(''):`<p class="empty">${archive?'The Pair Archive is being assembled.':'No published pairs are available at this moment.'}</p>`;
+  }catch(error){showError(node,error)}
+}
 
-function cleanNotes(text){return String(text||'').split(/\r?\n/).filter(line=>!Object.values(MEASURE_LABELS).some(label=>line.toLowerCase().includes(label.split(',')[0].toLowerCase()))&&!/\b(waist|rise|inseam|leg opening|overall length|outseam|thigh|hips?)\b/i.test(line)).join('\n').trim()}
-async function renderPair(){const node=document.querySelector('[data-pair]');if(!node)return;try{const id=new URLSearchParams(location.search).get('id');if(!id)throw new Error('Missing pair id');products=await loadProducts();const p=products.find(x=>String(x.vinted_item_id)===id);if(!p)throw new Error('Pair not found');document.title=`${p.title||'Pair File'} — FADEWELL`;const measures=Object.entries(MEASURE_LABELS).filter(([key])=>m(p,key)!=null).map(([key,label])=>`<div class="measure-row"><span>${label}</span><strong>${m(p,key)} cm</strong></div>`).join('');const gallery=(p.photos||[]).map((url,i)=>`<img loading="${i?'lazy':'eager'}" src="${safe(url)}" alt="${safe(p.title||'Vintage pair')}, photo ${i+1}">`).join('');const buy=p.available?`<a class="button primary pair-cta" href="${safe(p.vinted_url)}" target="_blank" rel="noopener">View & buy on Vinted ↗</a>`:`<span class="button pair-cta" aria-disabled="true">Sold — kept in the Pair Archive</span>`;node.innerHTML=`<a class="back-link" href="${p.sold?'archive.html':'shop.html'}">← Back to ${p.sold?'archive':'shop'}</a><div class="pair-grid"><div class="pair-gallery">${gallery}</div><article class="pair-info"><p class="pair-sub">Pair File · ${safe(p.garment_type==='JEANS'?'Jeans':'Trousers')}</p><h1>${safe(p.title||'Untitled pair')}</h1><p class="pair-price">${p.sold?'Sold':money(p.price_pln)}</p><div class="pair-details"><div class="pair-detail"><small>Brand</small>${safe(p.brand||'Not stated')}</div><div class="pair-detail"><small>Tagged size</small>${safe(p.size_label||'See measurements')}</div><div class="pair-detail"><small>Condition</small>${safe(p.condition_label||'See notes')}</div><div class="pair-detail"><small>Vinted category</small>${safe(p.vinted_category||p.garment_type)}</div></div><h2>Measurements</h2><div class="measure-table">${measures}</div><h2>The pair</h2><p class="pair-notes">${safe(cleanNotes(p.description_raw)||p.description_raw||'Pair-specific notes are on Vinted.')}</p>${buy}</article></div>${p.available?`<a class="button primary sticky-buy" href="${safe(p.vinted_url)}" target="_blank" rel="noopener">View & buy on Vinted ↗</a>`:''}`}catch(error){showError(node,error)}}
+function setupFilters(node,source){
+  const form=document.querySelector('[data-filters]'),count=document.querySelector('[data-count]'),sort=document.querySelector('[data-sort]');
+  const draw=()=>{const data=new FormData(form),query=String(data.get('q')||'').toLowerCase(),type=data.get('type'),waist=Number(data.get('waist')||Infinity),inseam=Number(data.get('inseam')||0);let shown=source.filter(product=>(!query||`${product.title} ${product.brand} ${product.description_raw}`.toLowerCase().includes(query))&&(!type||product.garment_type===type)&&(m(product,'waist')??Infinity)<=waist&&(m(product,'inseam')??0)>=inseam);shown.sort((a,b)=>sort.value==='price-asc'?(a.price_pln??Infinity)-(b.price_pln??Infinity):sort.value==='price-desc'?(b.price_pln??-1)-(a.price_pln??-1):sort.value==='waist'?(m(a,'waist')??Infinity)-(m(b,'waist')??Infinity):new Date(b.updated_at)-new Date(a.updated_at));count.textContent=`${shown.length} ${shown.length===1?'pair':'pairs'}`;node.innerHTML=shown.length?shown.map(product=>card(product)).join(''):'<p class="empty">No pair matches those filters. Try widening one measurement.</p>'};
+  form.addEventListener('input',draw);form.addEventListener('reset',()=>setTimeout(draw));sort.addEventListener('change',draw);draw();
+}
 
-async function setupFinder(){const form=document.querySelector('[data-finder]');if(!form)return;try{products=(await loadProducts()).filter(p=>p.available&&!p.sold)}catch(error){console.error(error)}form.addEventListener('submit',e=>{e.preventDefault();const wanted=Object.fromEntries([...new FormData(form)].map(([k,v])=>[k,Number(v)]));const ranked=products.map(p=>{const deltas=Object.keys(wanted).map(key=>({key,delta:(m(p,key)??999)-wanted[key]}));return {p,deltas,distance:deltas.reduce((sum,d)=>sum+Math.abs(d.delta),0)}}).filter(x=>x.deltas.every(d=>Math.abs(d.delta)<900)).sort((a,b)=>a.distance-b.distance).slice(0,6);const section=document.querySelector('[data-finder-results]'),node=document.querySelector('[data-finder-products]');section.hidden=false;node.innerHTML=ranked.length?ranked.map(x=>card(x.p,x.deltas)).join(''):'<p class="empty">No fully measured available pair could be compared yet.</p>';section.scrollIntoView({behavior:'smooth'})})}
+async function renderPair(){
+  const node=document.querySelector('[data-pair]');if(!node)return;
+  try{
+    const id=new URLSearchParams(location.search).get('id');if(!id)throw new Error('Missing pair id');
+    products=await loadProducts();const product=products.find(item=>String(item.vinted_item_id)===id);if(!product)throw new Error('Pair not found');
+    document.title=`${product.title||'The pair'} — FADEWELL`;
+    const measures=Object.entries(MEASURE_LABELS).filter(([key])=>m(product,key)!=null).map(([key,label])=>`<div class="measure-row"><span>${label}</span><strong>${m(product,key)} cm</strong></div>`).join('');
+    const gallery=(product.photos||[]).map((url,index)=>`<img loading="${index?'lazy':'eager'}" src="${safe(url)}" alt="${safe(product.title||'Vintage pair')}, photo ${index+1}">`).join('');
+    const buy=product.available?`<a class="button primary pair-cta" href="${safe(product.vinted_url)}" target="_blank" rel="noopener">View & buy on Vinted ↗</a>`:`<span class="button pair-cta" aria-disabled="true">Sold — kept in the Pair Archive</span>`;
+    const notes=cleanNotes(product.description_raw);
+    node.innerHTML=`<a class="back-link" href="${product.sold?'archive.html':'shop.html'}">← Back to ${product.sold?'archive':'shop'}</a><div class="pair-grid"><div class="pair-gallery">${gallery}</div><article class="pair-info"><p class="pair-sub">Measured · checked · worn well</p><h1>${safe(product.title||'Untitled pair')}</h1><p class="pair-price">${product.sold?'Sold':money(product.price_pln)}</p><div class="pair-details"><div class="pair-detail"><small>Brand</small>${safe(product.brand||'Not stated')}</div><div class="pair-detail"><small>Size</small>${safe(displaySize(product))}</div><div class="pair-detail"><small>Fit</small>${safe(displayFit(product))}</div></div><h2>Measurements</h2><div class="measure-table">${measures}</div><h2>The pair</h2><p class="pair-notes">${safe(notes||'Pair-specific notes are available on Vinted.')}</p>${buy}</article></div>${product.available?`<a class="button primary sticky-buy" href="${safe(product.vinted_url)}" target="_blank" rel="noopener">View & buy on Vinted ↗</a>`:''}`;
+  }catch(error){showError(node,error)}
+}
+
+async function setupFinder(){
+  const form=document.querySelector('[data-finder]');if(!form)return;
+  try{products=(await loadProducts()).filter(product=>product.available&&!product.sold)}catch(error){console.error(error)}
+  form.addEventListener('submit',event=>{
+    event.preventDefault();
+    const entries=[...new FormData(form)].filter(([,value])=>String(value).trim()!=='');
+    const errorNode=document.querySelector('[data-finder-error]');
+    if(!entries.length){errorNode.hidden=false;return}
+    errorNode.hidden=true;
+    const wanted=Object.fromEntries(entries.map(([key,value])=>[key,Number(value)]));
+    const ranked=products.map(product=>{const deltas=Object.keys(wanted).map(key=>({key,delta:(m(product,key)??999)-wanted[key]}));return {product,deltas,distance:deltas.reduce((sum,delta)=>sum+Math.abs(delta.delta),0)}}).filter(result=>result.deltas.every(delta=>Math.abs(delta.delta)<900)).sort((a,b)=>a.distance-b.distance).slice(0,12);
+    const section=document.querySelector('[data-finder-results]'),node=document.querySelector('[data-finder-products]');section.hidden=false;node.innerHTML=ranked.length?ranked.map(result=>card(result.product,result.deltas)).join(''):'<p class="empty">No available pair has every selected measurement yet.</p>';section.scrollIntoView({behavior:'smooth'});
+  });
+}
 
 renderListings();renderPair();setupFinder();
