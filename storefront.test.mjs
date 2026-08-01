@@ -39,6 +39,7 @@ assert.match(css,/@keyframes heroCopyText\{0%,38%\{opacity:1\}46%,92%\{opacity:0
 assert.match(css,/@keyframes heroCopyLogo\{0%,46%\{opacity:0\}54%,86%\{opacity:1\}/,'hero logo must fade in cleanly');
 assert.doesNotMatch(css,/@keyframes heroCopy(?:Text|Logo)[^}]*translateX/,'hero alternation must not slide horizontally');
 assert.match(css,/\.hero-cycle-logo\{[^}]*left:50%;top:50%;width:min\(108%,620px\)[^}]*translate\(-50%,-50%\)/,'hero logo must be large and centered');
+assert.match(css,/@media\(max-width:620px\)\{\.hero-cycle-logo\{width:min\(88vw,520px\);max-width:88vw\}/,'mobile hero logo must stay inside the viewport');
 assert.match(app,/fadewell_storefront_products/,'frontend must use the public storefront projection');
 assert.doesNotMatch(app,/service[_-]?role/i,'frontend must never contain a service-role credential');
 assert.doesNotMatch(app,/select=\*/,'frontend must request an explicit public field allowlist');
