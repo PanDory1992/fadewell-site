@@ -1,4 +1,4 @@
-import {MEASURE_LABELS,cleanNotes,displayColor,displayFit,displayOrigin,displaySize,displayTitle} from './storefront-utils.js';
+import {MEASURE_LABELS,cleanNotes,colourProfile,displayColor,displayOrigin,displaySize,displayTitle,silhouetteProfile} from './storefront-utils.js';
 
 const API_URL='https://qgjkxtolyhbwpvncwtkn.supabase.co/rest/v1/fadewell_storefront_products';
 const API_KEY='sb_publishable_4I4sJO02Tudp00ALX2xbaQ_DHptnBLb';
@@ -40,6 +40,7 @@ syncCurrencyButton();
 function safe(value){return String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]))}
 function m(product,key){return product.measurements?.[key]?.cm}
 function pairUrl(product){return `pair.html?id=${encodeURIComponent(product.vinted_item_id)}`}
+function populateOptions(form,name,values,excluded=[]){const select=form.elements[name];[...new Set(values.filter(value=>value&&!excluded.includes(value)))].sort().forEach(value=>select.add(new Option(value,value)))}
 
 function card(product,deltas,options={}){
   const photo=product.photos?.[0]||'',showPrice=options.showPrice!==false;
@@ -68,9 +69,9 @@ async function renderListings(){
 
 function setupFilters(node,source){
   const form=document.querySelector('[data-filters]'),count=document.querySelector('[data-count]'),sort=document.querySelector('[data-sort]');
-  const addOptions=(name,values)=>{const select=form.elements[name];[...new Set(values.filter(value=>value&&value!=='Not recorded'&&value!=='See garment notes'))].sort().forEach(value=>select.add(new Option(value,value)))};
-  addOptions('colour',source.map(displayColor));addOptions('fit',source.map(displayFit));
-  const draw=()=>{const data=new FormData(form),query=String(data.get('q')||'').toLowerCase(),type=data.get('type'),colour=data.get('colour'),fit=data.get('fit'),waist=Number(data.get('waist')||Infinity),inseam=Number(data.get('inseam')||0);let shown=source.filter(product=>(!query||`${product.title} ${product.brand} ${product.description_raw}`.toLowerCase().includes(query))&&(!type||product.garment_type===type)&&(!colour||displayColor(product)===colour)&&(!fit||displayFit(product)===fit)&&(m(product,'waist')??Infinity)<=waist&&(m(product,'inseam')??0)>=inseam);shown.sort((a,b)=>sort.value==='price-asc'?(a.price_pln??Infinity)-(b.price_pln??Infinity):sort.value==='price-desc'?(b.price_pln??-1)-(a.price_pln??-1):sort.value==='waist'?(m(a,'waist')??Infinity)-(m(b,'waist')??Infinity):Number(b.vinted_item_id)-Number(a.vinted_item_id));count.textContent=`${shown.length} ${shown.length===1?'pair':'pairs'}`;node.innerHTML=shown.length?shown.map(product=>card(product)).join(''):'<p class="empty">No pair matches those filters. Try widening one measurement.</p>';updatePrices()};
+  populateOptions(form,'colour',source.map(product=>colourProfile(product).family),['Not decoded']);
+  populateOptions(form,'silhouette',source.map(product=>silhouetteProfile(product).label),['Shape not decoded']);
+  const draw=()=>{const data=new FormData(form),query=String(data.get('q')||'').toLowerCase(),type=data.get('type'),colour=data.get('colour'),silhouette=data.get('silhouette'),waist=Number(data.get('waist')||Infinity),inseam=Number(data.get('inseam')||0);let shown=source.filter(product=>(!query||`${product.title} ${product.brand} ${product.description_raw}`.toLowerCase().includes(query))&&(!type||product.garment_type===type)&&(!colour||colourProfile(product).family===colour)&&(!silhouette||silhouetteProfile(product).label===silhouette)&&(m(product,'waist')??Infinity)<=waist&&(m(product,'inseam')??0)>=inseam);shown.sort((a,b)=>sort.value==='price-asc'?(a.price_pln??Infinity)-(b.price_pln??Infinity):sort.value==='price-desc'?(b.price_pln??-1)-(a.price_pln??-1):sort.value==='waist'?(m(a,'waist')??Infinity)-(m(b,'waist')??Infinity):Number(b.vinted_item_id)-Number(a.vinted_item_id));count.textContent=`${shown.length} ${shown.length===1?'pair':'pairs'}`;node.innerHTML=shown.length?shown.map(product=>card(product)).join(''):'<p class="empty">No pair matches those filters. Try widening one measurement.</p>';updatePrices()};
   form.addEventListener('input',draw);form.addEventListener('reset',()=>setTimeout(draw));sort.addEventListener('change',draw);draw();
 }
 
@@ -97,21 +98,23 @@ async function renderPair(){
     const measures=Object.entries(MEASURE_LABELS).filter(([key])=>m(product,key)!=null).map(([key,label])=>`<div class="measure-row"><span>${label}</span><strong>${m(product,key)} cm</strong></div>`).join('');
     const buy=product.available?`<a class="button primary pair-cta" href="${safe(product.vinted_url)}" target="_blank" rel="noopener">View & buy on Vinted ↗</a>`:`<span class="button pair-cta" aria-disabled="true">Sold — kept in the Pair Archive</span>`;
     const notes=cleanNotes(product.description_raw);
-    node.innerHTML=`<a class="back-link" href="${product.sold?'archive.html':'shop.html'}">← Back to ${product.sold?'archive':'shop'}</a><div class="pair-grid">${galleryMarkup(product)}<article class="pair-info"><p class="pair-sub">Measured · checked · worn well</p><h1>${safe(displayTitle(product))}</h1><div class="pair-purchase"><p class="pair-price"${product.sold?'':` data-price-pln="${safe(product.price_pln)}"`}>${product.sold?'Sold':money(product.price_pln)}</p>${buy}</div><div class="pair-details"><div class="pair-detail"><small>Brand</small>${safe(product.brand||'Not stated')}</div><div class="pair-detail"><small>Size</small>${safe(displaySize(product))}</div><div class="pair-detail"><small>Fit</small>${safe(displayFit(product))}</div><div class="pair-detail pair-detail-wide"><small>Origin</small>${safe(displayOrigin(product))}</div><div class="pair-detail"><small>Color</small>${safe(displayColor(product))}</div></div><h2>Measurements</h2><div class="measure-table">${measures}</div><h2>The pair</h2><p class="pair-notes">${safe(notes||'Pair-specific notes are available on Vinted.')}</p></article></div>${product.available?`<a class="button primary sticky-buy" href="${safe(product.vinted_url)}" target="_blank" rel="noopener">View & buy on Vinted ↗</a>`:''}`;setupGallery(node,product);updatePrices();
+    node.innerHTML=`<a class="back-link" href="${product.sold?'archive.html':'shop.html'}">← Back to ${product.sold?'archive':'shop'}</a><div class="pair-grid">${galleryMarkup(product)}<article class="pair-info"><p class="pair-sub">Measured · checked · worn well</p><h1>${safe(displayTitle(product))}</h1><div class="pair-purchase"><p class="pair-price"${product.sold?'':` data-price-pln="${safe(product.price_pln)}"`}>${product.sold?'Sold':money(product.price_pln)}</p>${buy}</div><div class="pair-details"><div class="pair-detail"><small>Brand</small>${safe(product.brand||'Not stated')}</div><div class="pair-detail"><small>Size</small>${safe(displaySize(product))}</div><div class="pair-detail"><small>Silhouette</small>${safe(silhouetteProfile(product).label)}</div><div class="pair-detail pair-detail-wide"><small>Origin</small>${safe(displayOrigin(product))}</div><div class="pair-detail"><small>Colour</small>${safe(displayColor(product))}</div></div><h2>Measurements</h2><div class="measure-table">${measures}</div><h2>The pair</h2><p class="pair-notes">${safe(notes||'Pair-specific notes are available on Vinted.')}</p></article></div>${product.available?`<a class="button primary sticky-buy" href="${safe(product.vinted_url)}" target="_blank" rel="noopener">View & buy on Vinted ↗</a>`:''}`;setupGallery(node,product);updatePrices();
   }catch(error){showError(node,error)}
 }
 
 async function setupFinder(){
   const form=document.querySelector('[data-finder]');if(!form)return;
-  try{products=(await loadProducts()).filter(product=>product.available&&!product.sold)}catch(error){console.error(error)}
+  try{products=(await loadProducts()).filter(product=>product.available&&!product.sold);populateOptions(form,'colour',products.map(product=>colourProfile(product).family),['Not decoded']);populateOptions(form,'silhouette',products.map(product=>silhouetteProfile(product).label),['Shape not decoded'])}catch(error){console.error(error)}
   form.addEventListener('submit',event=>{
     event.preventDefault();
-    const entries=[...new FormData(form)].filter(([,value])=>String(value).trim()!=='');
+    const data=new FormData(form),colour=String(data.get('colour')||''),silhouette=String(data.get('silhouette')||'');
+    const entries=[...data].filter(([key,value])=>key in MEASURE_LABELS&&String(value).trim()!=='');
     const errorNode=document.querySelector('[data-finder-error]');
-    if(!entries.length){errorNode.hidden=false;return}
+    if(!entries.length&&!colour&&!silhouette){errorNode.hidden=false;return}
     errorNode.hidden=true;
     const wanted=Object.fromEntries(entries.map(([key,value])=>[key,Number(value)]));
-    const ranked=products.map(product=>{const deltas=Object.keys(wanted).map(key=>({key,delta:(m(product,key)??999)-wanted[key]}));return {product,deltas,distance:deltas.reduce((sum,delta)=>sum+Math.abs(delta.delta),0)}}).filter(result=>result.deltas.every(delta=>Math.abs(delta.delta)<900)).sort((a,b)=>a.distance-b.distance).slice(0,12);
+    const candidates=products.filter(product=>(!colour||colourProfile(product).family===colour)&&(!silhouette||silhouetteProfile(product).label===silhouette));
+    const ranked=candidates.map(product=>{const deltas=Object.keys(wanted).map(key=>({key,delta:(m(product,key)??999)-wanted[key]}));return {product,deltas,distance:deltas.reduce((sum,delta)=>sum+Math.abs(delta.delta),0)}}).filter(result=>result.deltas.every(delta=>Math.abs(delta.delta)<900)).sort((a,b)=>a.distance-b.distance||Number(b.product.vinted_item_id)-Number(a.product.vinted_item_id)).slice(0,12);
     const section=document.querySelector('[data-finder-results]'),node=document.querySelector('[data-finder-products]');section.hidden=false;node.innerHTML=ranked.length?ranked.map(result=>card(result.product,result.deltas)).join(''):'<p class="empty">No available pair has every selected measurement yet.</p>';updatePrices();section.scrollIntoView({behavior:'smooth'});
   });
 }

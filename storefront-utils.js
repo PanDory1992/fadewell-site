@@ -40,6 +40,7 @@ export function displayTitle(product){
 }
 
 function titleCase(value){const text=String(value||'').trim();return /^(?:usa|uk)$/i.test(text)?text.toUpperCase():text.replace(/\b\w/g,letter=>letter.toUpperCase())}
+function measurement(product,key){const value=Number(product?.measurements?.[key]?.cm);return Number.isFinite(value)?value:null}
 export function displayOrigin(product){
   const origin=String(product?.dna_origin||'').replace(/^made\s+in\s+/i,'').trim();
   const era=String(product?.dna_era||'').trim();
@@ -47,4 +48,58 @@ export function displayOrigin(product){
   if(!origin)return year?`Origin not recorded — ${year}`:'Not recorded';
   return `Made in ${titleCase(origin)}${year?` — ${year}`:''}`;
 }
-export function displayColor(product){return titleCase(product?.dna_color)||'Not recorded'}
+
+export function colourProfile(product){
+  const raw=String(product?.dna_color||'').trim(),text=raw.toLowerCase();
+  if(!raw)return {raw:'',family:'Not decoded',tone:null,finish:null,label:'Not decoded',source:'Missing DNA'};
+  const family=[
+    [/\b(?:grey|gray|charcoal|graphite|silver)\b/,'Grey'],
+    [/\b(?:blue|indigo|navy)\b/,'Blue'],
+    [/\bblack\b/,'Black'],[/\b(?:white|ivory)\b/,'White'],[/\b(?:ecru|cream)\b/,'Ecru'],
+    [/\b(?:beige|sand|khaki|tan)\b/,'Beige'],[/\bbrown\b/,'Brown'],[/\b(?:green|olive)\b/,'Green'],
+    [/\b(?:red|burgundy|maroon)\b/,'Red'],[/\borange\b/,'Orange'],[/\byellow\b/,'Yellow'],[/\bpurple\b/,'Purple'],
+  ].find(([pattern])=>pattern.test(text))?.[1]||titleCase(raw);
+  const tone=/\b(?:dark|black|charcoal|navy)\b/.test(text)?'Dark':/\b(?:light|pale|bleach|white|ecru|cream)\b/.test(text)?'Light':/\b(?:mid|medium)\b/.test(text)?'Mid':null;
+  const finish=[
+    [/acid[ -]?wash/,'Acid Wash'],[/stone[ -]?wash/,'Stonewash'],[/\b(?:faded|fade)\b/,'Faded'],
+    [/\braw\b/,'Raw'],[/\brinse\b/,'Rinse'],[/over[ -]?dyed/,'Overdyed'],[/\bcoated\b/,'Coated'],[/\bbleach(?:ed)?\b/,'Bleached'],
+  ].find(([pattern])=>pattern.test(text))?.[1]||null;
+  const label=`${tone?`${tone} `:''}${family}${finish?` · ${finish}`:''}`;
+  return {raw,family,tone,finish,label,source:'DNA'};
+}
+
+export function silhouetteProfile(product){
+  const dna=String(product?.dna_fit||'').trim(),fallback=displayFit(product),raw=dna||fallback;
+  const text=raw.toLowerCase(),thigh=measurement(product,'thigh'),opening=measurement(product,'leg_opening');
+  const ratio=thigh&&opening?opening/thigh:null;
+  let label=null,ease=null,legShape=null,explicitShape=false;
+  if(/\b(?:wide|baggy)\b/.test(text)){label='Wide & Relaxed';ease='Loose';legShape='Wide';explicitShape=true}
+  else if(/\bflare(?:d)?\b/.test(text)){label='Flared';legShape='Flared';explicitShape=true}
+  else if(/\bbootcut\b/.test(text)){label='Bootcut';legShape='Bootcut';explicitShape=true}
+  else if(/\bskinny\b/.test(text)){label='Narrow & Tapered';ease='Skinny';legShape='Tapered';explicitShape=true}
+  else if(/\bslim\b.*\btapered?\b|\btapered?\b.*\bslim\b/.test(text)){label='Narrow & Tapered';ease='Slim';legShape='Tapered';explicitShape=true}
+  else if(/\b(?:relaxed|loose)\b.*\btapered?\b|\btapered?\b.*\b(?:relaxed|loose)\b/.test(text)){label='Roomy Top · Tapered Leg';ease='Relaxed';legShape='Tapered';explicitShape=true}
+  else if(/\bregular\b.*\btapered?\b|\btapered?\b.*\bregular\b/.test(text)){label='Regular Tapered';ease='Regular';legShape='Tapered';explicitShape=true}
+  else if(/\bslim\b.*\bstraight\b|\bstraight\b.*\bslim\b/.test(text)){label='Slim Straight';ease='Slim';legShape='Straight';explicitShape=true}
+  else if(/\b(?:relaxed|loose)\b.*\bstraight\b|\bstraight\b.*\b(?:relaxed|loose)\b/.test(text)){label='Roomy Straight';ease='Relaxed';legShape='Straight';explicitShape=true}
+  else if(/\bstraight\b/.test(text)){label='Clean Straight';ease=/\bregular\b/.test(text)?'Regular':null;legShape='Straight';explicitShape=true}
+  else if(/\btapered?\b/.test(text)){label='Tapered Leg';legShape='Tapered';explicitShape=true}
+  if(!explicitShape&&ratio!=null){
+    const tapered=ratio<=.68;
+    if(/\b(?:relaxed|loose)\b/.test(text)){label=tapered?'Roomy Top · Tapered Leg':'Roomy Straight';ease='Relaxed';legShape=tapered?'Tapered':'Straight'}
+    else if(/\bslim\b/.test(text)){label=tapered?'Narrow & Tapered':'Slim Straight';ease='Slim';legShape=tapered?'Tapered':'Straight'}
+    else if(/\bregular\b/.test(text)){label=tapered?'Regular Tapered':'Clean Straight';ease='Regular';legShape=tapered?'Tapered':'Straight'}
+    else {label=tapered?'Tapered Leg':'Straight Leg';legShape=tapered?'Tapered':'Straight'}
+  }
+  if(!label){
+    if(/\b(?:relaxed|loose)\b/.test(text)){label='Relaxed Fit';ease='Relaxed'}
+    else if(/\bslim\b/.test(text)){label='Slim Fit';ease='Slim'}
+    else if(/\bregular\b/.test(text)){label='Regular Fit';ease='Regular'}
+    else label='Shape not decoded';
+  }
+  const source=dna?'DNA':fallback!=='See garment notes'?'Listing':ratio!=null?'Measurements':'Insufficient evidence';
+  const confidence=dna&&explicitShape?'high':explicitShape||ratio!=null?'medium':'low';
+  return {raw:dna||'',label,ease,legShape,ratio,source,confidence};
+}
+
+export function displayColor(product){return colourProfile(product).label}

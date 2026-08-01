@@ -23,10 +23,12 @@ assert.doesNotMatch(home,/Open the shop|Not on Vinted\?/,'Vinted section must no
 
 const finder=readFileSync(new URL('finder.html',import.meta.url),'utf8');
 assert.doesNotMatch(finder,/<input required/i,'Finder measurements must all be optional');
-assert.match(finder,/One field is enough/,'Finder must explain partial measurement matching');
+assert.match(finder,/Enter one measurement or any combination you know\./,'Finder must explain partial measurement matching');
 assert.match(finder,/finder-intro[\s\S]*<span>Enter one measurement[\s\S]*<span>We compare only those numbers/,'Finder intro sentences must be separate lines');
 assert.match(finder,/finder-instructions[\s\S]*<span>Fasten it[\s\S]*<span>A difference is not automatically bad/,'Finder instructions must be separate lines');
 assert.doesNotMatch(finder,/Every result opens a complete Pair File/,'Finder must omit the redundant Pair File sentence');
+assert.match(finder,/name="colour"[\s\S]*name="silhouette"/,'Finder must expose colour-family and silhouette facets');
+assert.match(finder,/DNA leads; measurements only decode shape when DNA is incomplete/,'Finder must explain Silhouette Engine evidence priority');
 
 const app=readFileSync(new URL('storefront.js',import.meta.url),'utf8');
 assert.match(app,/Vintage Jeans &amp; Denim\. Measured\. Checked\. Worn well\./,'footer must restore original tagline');
@@ -51,9 +53,9 @@ assert.match(app,/showPrice:page!==['"]home['"]/,'home cards must hide prices');
 assert.doesNotMatch(app,/class="card-measures"/,'product cards must not repeat measurements beneath the title');
 assert.doesNotMatch(app,/class="card-meta"/,'product cards must keep the copy area to title and price');
 assert.doesNotMatch(app,/condition_label|vinted_category|size_label/,'product UI must not request Vinted condition, category or tagged size');
-assert.match(app,/<small>Fit<\/small>/,'product page must show fit');
+assert.match(app,/<small>Silhouette<\/small>/,'product page must show the decoded silhouette');
 assert.match(app,/<small>Origin<\/small>/,'product page must show DNA origin');
-assert.match(app,/<small>Color<\/small>/,'product page must show DNA color');
+assert.match(app,/<small>Colour<\/small>/,'product page must show the canonical colour story');
 assert.match(app,/dna_origin,dna_era,dna_color/,'public query must request the new DNA display fields');
 assert.match(app,/api\.nbp\.pl\/api\/exchangerates\/rates\/a\/eur/,'EUR switch must use the official NBP average-rate API');
 assert.match(app,/data-gallery-thumbs/,'pair page must use a bounded thumbnail gallery');
@@ -62,12 +64,13 @@ assert.match(app,/data-gallery-hero-next/,'pair gallery must expose next-photo n
 assert.match(app,/selectPhoto\(selected-1\)/,'pair gallery must return one photo at a time, including to the first photo');
 assert.match(app,/selectPhoto\(selected\+1\)/,'pair gallery must advance one photo at a time');
 assert.match(css,/\.pair-hero-photo img\{[^}]*object-fit:contain/,'pair hero photos must never be cropped');
-assert.match(css,/body\[data-page="shop"\] \.card-title\{height:3\.6em/,'shop titles must reserve equal vertical space');
+assert.match(css,/body\[data-page="shop"\] \.card-title\{height:2\.4em/,'shop titles must reserve two lines and raise the price');
 assert.match(css,/\.card-price\{margin-top:auto/,'shop prices must align at the bottom of equal card bodies');
+assert.match(css,/body\[data-page="shop"\] \.card-price\{margin:4px 0 0;padding-top:0\}/,'Shop prices must sit directly below the reserved title space');
 assert.match(css,/\.site-footer\{[^}]*margin-top:clamp\(70px,8vw,120px\)/,'footer must have breathing room from page content');
 assert.match(css,/\.footer-grid\{[^}]*align-items:center/,'footer links must align with the brand block');
-assert.match(app,/addOptions\('colour',source\.map\(displayColor\)\)/,'Shop must populate the colour filter from product data');
-assert.match(app,/addOptions\('fit',source\.map\(displayFit\)\)/,'Shop must populate the fit filter from product data');
+assert.match(app,/populateOptions\(form,'colour',source\.map\(product=>colourProfile\(product\)\.family\)/,'Shop must populate canonical colour families');
+assert.match(app,/populateOptions\(form,'silhouette',source\.map\(product=>silhouetteProfile\(product\)\.label\)/,'Shop must use the shared Silhouette Engine');
 assert.match(app,/Number\(b\.vinted_item_id\)-Number\(a\.vinted_item_id\)/,'Newest must follow Vinted listing order rather than refresh timestamps');
 assert.match(css,/body\[data-page="shop"\] \.filters\{grid-template-columns:minmax\(150px,1\.4fr\) repeat\(5,minmax\(105px,1fr\)\) auto\}/,'desktop Shop filters must fit in one row');
 assert.match(css,/@media\(max-width:900px\)\{\.pair-grid\{grid-template-columns:1fr\}/,'pair page must stack into one column on tablet and mobile');
@@ -86,6 +89,14 @@ assert.equal(utils.displayFit({dna_fit:'Relaxed Tapered',title:'Straight jeans'}
 assert.equal(utils.displayOrigin({dna_origin:'USA',dna_era:'1992'}),'Made in USA — 1992');
 assert.equal(utils.displayColor({dna_color:'mid blue'}),'Mid Blue');
 assert.equal(utils.displayTitle({title:'Levi’s 501 Selvedge White Oak Cone Denim – Mid Blue – W26 (28) L32 Size M – Rare Piece'}),'Levi’s 501 Selvedge White Oak Cone Denim');
+
+assert.deepEqual(utils.colourProfile({dna_color:'black gray acidwash'}),{raw:'black gray acidwash',family:'Grey',tone:'Dark',finish:'Acid Wash',label:'Dark Grey · Acid Wash',source:'DNA'});
+assert.equal(utils.colourProfile({dna_color:'dark grey'}).family,'Grey','Gray and Grey must share one canonical family');
+assert.equal(utils.silhouetteProfile({dna_fit:'Relaxed Tapered'}).label,'Roomy Top · Tapered Leg');
+assert.equal(utils.silhouetteProfile({dna_fit:'Regular Straight'}).label,'Clean Straight');
+assert.equal(utils.silhouetteProfile({dna_fit:'Flare'}).label,'Flared');
+assert.equal(utils.silhouetteProfile({measurements:{thigh:{cm:30},leg_opening:{cm:17}}}).label,'Tapered Leg','measurements may decode leg shape only when DNA is missing');
+assert.equal(utils.silhouetteProfile({dna_fit:'Regular',measurements:{thigh:{cm:30},leg_opening:{cm:17}}}).label,'Regular Tapered','measurements may complete an incomplete DNA fit');
 
 const allHtml=pages.map(page=>readFileSync(new URL(page,import.meta.url),'utf8')).join('\n');
 assert.doesNotMatch(allHtml,/<form[^>]+action=/i,'storefront must not implement a checkout form');
