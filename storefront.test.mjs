@@ -14,7 +14,7 @@ assert.match(home,/data-limit="5"/,'home must request five pairs');
 assert.match(home,/Measured &middot; checked &middot; worn well/i,'home must use the approved brand line');
 assert.equal((home.match(/class="hero-img"/g)||[]).length,3,'hero must rotate three images');
 assert.match(home,/Sweden, Denmark, Finland/,'shipping countries section must be restored');
-assert.match(home,/hero-message-cycle[\s\S]*Find the pair that already fits your life[\s\S]*fadewell-lockup\.png/,'hero message must alternate with the original lockup');
+assert.match(home,/hero-message-cycle[\s\S]*Find the pair<\/span><span>that already fits<\/span><span>your life\.<\/span>[\s\S]*fadewell-lockup\.png/,'hero message must use three fixed lines and alternate with the original lockup');
 assert.match(home,/Wardrobe curated by me/i,'home wardrobe label must use approved copy');
 assert.match(home,/One promise runs through the whole shop/,'decoded section must use original copy');
 assert.match(home,/Real vintage, checked against the tells of reproductions and fakes/,'decoded features must use original copy');
@@ -28,6 +28,9 @@ assert.match(finder,/One field is enough/,'Finder must explain partial measureme
 const app=readFileSync(new URL('storefront.js',import.meta.url),'utf8');
 assert.match(app,/Vintage Jeans &amp; Denim\. Measured\. Checked\. Worn well\./,'footer must restore original tagline');
 assert.match(app,/Google profile/,'footer must restore original links');
+const css=readFileSync(new URL('storefront.css',import.meta.url),'utf8');
+assert.match(css,/heroCopyText 10s/,'hero copy and logo must alternate every five seconds');
+assert.match(css,/\.hero \.lede,\.decoded-head>p\{font-size:clamp\(16px,1\.8vw,19px\)/,'hero and decoded paragraphs must share the same font size');
 assert.match(app,/fadewell_storefront_products/,'frontend must use the public storefront projection');
 assert.doesNotMatch(app,/service[_-]?role/i,'frontend must never contain a service-role credential');
 assert.doesNotMatch(app,/select=\*/,'frontend must request an explicit public field allowlist');

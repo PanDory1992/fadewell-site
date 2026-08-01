@@ -50,8 +50,9 @@ body[data-page=home] .site-footer{margin-top:0}
 /* Original FADEWELL homepage language and finish. */
 .hero-message-cycle{position:relative;width:100%;min-height:clamp(230px,22vw,310px);overflow:hidden}
 .hero-message-cycle h1,.hero-cycle-logo{position:absolute;inset:0 auto auto 0}
+.hero-message-cycle h1 span{display:block;white-space:nowrap}
 .hero-cycle-logo{width:min(100%,560px);top:50%;transform:translateY(-50%);height:auto}
-.decoded-head{max-width:60ch}.decoded-head>p{font-size:clamp(16px,1.8vw,19px);color:var(--ink-2)}
+.decoded-head{max-width:60ch}.hero .lede,.decoded-head>p{font-size:clamp(16px,1.8vw,19px);color:var(--ink-2)}
 .decoded-grid{gap:clamp(20px,3vw,34px);margin-top:clamp(34px,4vw,52px)}
 .decoded-feature{border:0;padding:0}.decoded-icon{width:56px;height:56px;border:1.5px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
 .decoded-icon svg{width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
@@ -65,9 +66,9 @@ body[data-page=home] .site-footer{margin-top:0}
 .footer-base{margin-top:34px;padding-top:18px;border-color:var(--line);color:var(--rust);font-size:11.5px;letter-spacing:.12em}
 
 @media(prefers-reduced-motion:no-preference){
-  .hero-message-cycle h1{animation:heroCopyText 6s ease-in-out infinite}.hero-cycle-logo{animation:heroCopyLogo 6s ease-in-out infinite}
-  @keyframes heroCopyText{0%,42%{opacity:1;transform:translateX(0)}50%,92%{opacity:0;transform:translateX(-34px)}100%{opacity:1;transform:translateX(0)}}
-  @keyframes heroCopyLogo{0%,42%{opacity:0;transform:translate(34px,-50%)}50%,92%{opacity:1;transform:translate(0,-50%)}100%{opacity:0;transform:translate(-34px,-50%)}}
+  .hero-message-cycle h1{animation:heroCopyText 10s ease-in-out infinite}.hero-cycle-logo{animation:heroCopyLogo 10s ease-in-out infinite}
+  @keyframes heroCopyText{0%,38%{opacity:1;transform:translateX(0)}50%,88%{opacity:0;transform:translateX(-34px)}100%{opacity:1;transform:translateX(0)}}
+  @keyframes heroCopyLogo{0%,38%{opacity:0;transform:translate(34px,-50%)}50%,88%{opacity:1;transform:translate(0,-50%)}100%{opacity:0;transform:translate(-34px,-50%)}}
 }
 @media(prefers-reduced-motion:reduce){.hero-cycle-logo{display:none}.hero-message-cycle h1{position:static}}
 @media(max-width:620px){.hero-message-cycle{min-height:190px}.hero-cycle-logo{width:100%}.footer-links{display:flex}.footer-brand p{letter-spacing:.1em}}
