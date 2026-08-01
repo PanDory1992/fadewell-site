@@ -28,7 +28,7 @@ assert.match(finder,/finder-intro[\s\S]*<span>Enter one measurement[\s\S]*<span>
 assert.match(finder,/finder-instructions[\s\S]*<span>Fasten it[\s\S]*<span>A difference is not automatically bad/,'Finder instructions must be separate lines');
 assert.doesNotMatch(finder,/Every result opens a complete Pair File/,'Finder must omit the redundant Pair File sentence');
 assert.match(finder,/name="colour"[\s\S]*name="silhouette"/,'Finder must expose colour-family and silhouette facets');
-assert.match(finder,/DNA leads; measurements only decode shape when DNA is incomplete/,'Finder must explain Silhouette Engine evidence priority');
+assert.doesNotMatch(finder,/DNA leads; measurements only decode shape when DNA is incomplete/,'Finder must omit internal Silhouette Engine evidence copy');
 
 const app=readFileSync(new URL('storefront.js',import.meta.url),'utf8');
 assert.match(app,/Vintage Jeans &amp; Denim\. Measured\. Checked\. Worn well\./,'footer must restore original tagline');
@@ -81,6 +81,8 @@ const utils=await import(`data:text/javascript;base64,${Buffer.from(utilsSource)
 const listing=`Authentic Levi’s 535-0285 regular fit jeans, carefully checked and hand-measured by me.\nA softly faded everyday pair.\n\nMeasurements, hand-measured flat by me:\nWaist: 40 cm\nRise: 28 cm\nOne-off piece — only one available in this size.\n⭐ 200+ five-star reviews – buy with confidence.\nFast shipping, happy to answer questions.`;
 assert.equal(utils.cleanNotes(listing),'A softly faded everyday pair.','description must stop before measurements and closing clause');
 assert.equal(utils.cleanNotes('Authentic Lee jeans, carefully checked and measured by me 👖\n\nCondition: Excellent — worn, but no flaws.\nNo stains or repairs.\n\nMeasurements:\nWaist: 43 cm'),'No stains or repairs.','description must remove emoji boilerplate and Condition line');
+assert.equal(utils.cleanNotes('An exceptional pair of true vintage Made in USA Levi’s 501s in classic white denim, carefully checked and measured by me.\nA bright, clean 501 with a straight leg.\n\nMeasurements:\nWaist: 40 cm'),'A bright, clean 501 with a straight leg.','any opening by-me clause must be removed');
+assert.equal(utils.cleanNotes('Carefully selected and measured by me. The denim has a soft, even fade.\nMeasurements:\nWaist: 40 cm'),'The denim has a soft, even fade.','same-line copy after the opening clause must remain');
 assert.equal(utils.displaySize({title:"Levi's 535 — W30 L30 — Made in UK"}),'W30 L30','size must come from listing text');
 assert.equal(utils.displayFit({title:'Regular straight jeans'}),'Straight');
 assert.equal(utils.displayFit({title:'Relaxed tapered jeans'}),'Relaxed Tapered');

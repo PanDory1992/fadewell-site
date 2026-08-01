@@ -7,6 +7,7 @@ export function cleanNotes(value){
   const cutAt=lines.findIndex(line=>heading.test(line)||(measurement.test(line)&&/\d/.test(line)));
   const before=(cutAt<0?lines:lines.slice(0,cutAt)).join('\n');
   return before
+    .replace(/^\s*[^.!?\n]{1,500}?\bby me(?:\s*[.!?])?(?:\s*[^\p{L}\p{N}\n])*\s*/iu,'')
     .replace(/^\s*Authentic[^\n]*carefully checked and (?:hand-)?measured by me[^\n]*\n?/gim,'')
     .replace(/^\s*Condition\s*:[^\n]*\n?/gim,'')
     .replace(/\n{3,}/g,'\n\n')
