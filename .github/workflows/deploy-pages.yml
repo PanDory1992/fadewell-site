@@ -5,6 +5,8 @@ on:
     branches: [main]
   schedule:
     - cron: '35 * * * *'
+  repository_dispatch:
+    types: [storefront-updated]
   workflow_dispatch:
 
 permissions:
