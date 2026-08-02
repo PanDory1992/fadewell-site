@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const pages=['index.html','shop.html','pair.html','finder.html','archive.html'];
+const pages=['index.html','shop.html','pair.html','finder.html','archive.html','guides.html','how-to-measure-jeans-flat.html','jeans-waist-size-vs-flat-measurement.html','jeans-fit-silhouette-guide.html'];
 for(const page of pages){
   const html=readFileSync(new URL(page,import.meta.url),'utf8');
   assert.match(html,/<html lang="en">/,`${page} must remain English`);
@@ -47,6 +47,8 @@ assert.match(app,/\/pairs\/\$\{encodeURIComponent\(product\.vinted_item_id\)\}\/
 assert.match(app,/track_fadewell_storefront_event/,'frontend must use the anonymous first-party Supabase funnel');
 assert.match(app,/pair_card_click/,'funnel must measure the list-to-Pair transition');
 assert.match(app,/vinted_click/,'funnel must measure the Pair-to-Vinted transition');
+for(const eventName of ['finder_start','finder_result_click','browse_shop','open_finder','currency_toggle','archive_view','engaged_view','scroll_75','storefront_error'])assert.match(app,new RegExp(eventName),`funnel must measure ${eventName}`);
+assert.match(app,/fadewell-internal-traffic/,'owner traffic must be excludable without identifying normal visitors');
 assert.doesNotMatch(app,/cookie|session[_-]?id|user[_-]?id|fingerprint/i,'analytics must not introduce visitor identifiers');
 assert.doesNotMatch(app,/service[_-]?role/i,'frontend must never contain a service-role credential');
 assert.doesNotMatch(app,/select=\*/,'frontend must request an explicit public field allowlist');
@@ -85,9 +87,11 @@ const utilsSource=readFileSync(new URL('storefront-utils.js',import.meta.url),'u
 const utils=await import(`data:text/javascript;base64,${Buffer.from(utilsSource).toString('base64')}`);
 const listing=`Authentic Levi’s 535-0285 regular fit jeans, carefully checked and hand-measured by me.\nA softly faded everyday pair.\n\nMeasurements, hand-measured flat by me:\nWaist: 40 cm\nRise: 28 cm\nOne-off piece — only one available in this size.\n⭐ 200+ five-star reviews – buy with confidence.\nFast shipping, happy to answer questions.`;
 assert.equal(utils.cleanNotes(listing),'A softly faded everyday pair.','description must stop before measurements and closing clause');
-assert.equal(utils.cleanNotes('Authentic Lee jeans, carefully checked and measured by me 👖\n\nCondition: Excellent — worn, but no flaws.\nNo stains or repairs.\n\nMeasurements:\nWaist: 43 cm'),'No stains or repairs.','description must remove emoji boilerplate and Condition line');
+assert.equal(utils.cleanNotes('Authentic Lee jeans, carefully checked and measured by me 👖\n\nCondition: Excellent — worn, but no flaws.\nNo stains or repairs.\n\nMeasurements:\nWaist: 43 cm'),'Condition: Excellent — worn, but no flaws.\nNo stains or repairs.','description must preserve the complete honest condition description');
+assert.equal(utils.cleanNotes('Condition: Good vintage condition with a repaired hem.\nMeasurements:\nWaist: 43 cm'),'Condition: Good vintage condition with a repaired hem.','a Condition label is public product evidence, not boilerplate');
 assert.equal(utils.cleanNotes('An exceptional pair of true vintage Made in USA Levi’s 501s in classic white denim, carefully checked and measured by me.\nA bright, clean 501 with a straight leg.\n\nMeasurements:\nWaist: 40 cm'),'A bright, clean 501 with a straight leg.','any opening by-me clause must be removed');
 assert.equal(utils.cleanNotes('Carefully selected and measured by me. The denim has a soft, even fade.\nMeasurements:\nWaist: 40 cm'),'The denim has a soft, even fade.','same-line copy after the opening clause must remain');
+assert.match(utils.publicPairNotes({sold:true,description_raw:null}),/not recovered/,'a recovered sold pair must disclose missing condition evidence rather than invent it');
 assert.equal(utils.displaySize({title:"Levi's 535 — W30 L30 — Made in UK"}),'W30 L30','size must come from listing text');
 assert.equal(utils.displayFit({title:'Regular straight jeans'}),'Straight');
 assert.equal(utils.displayFit({title:'Relaxed tapered jeans'}),'Relaxed Tapered');
@@ -109,4 +113,7 @@ const allHtml=pages.map(page=>readFileSync(new URL(page,import.meta.url),'utf8')
 assert.doesNotMatch(allHtml,/<form[^>]+action=/i,'storefront must not implement a checkout form');
 assert.match(readFileSync(new URL('pair.html',import.meta.url),'utf8'),/noindex,follow/,'legacy query Pair page must not compete with canonical Pair URLs');
 assert.match(home,/application\/ld\+json/,'home must expose organization structured data');
+const buildSource=readFileSync(new URL('scripts/build-storefront.mjs',import.meta.url),'utf8');
+assert.match(buildSource,/createHash\('sha256'\)[\s\S]*storefront\.\$\{/,'production assets must use content fingerprints');
+assert.match(buildSource,/how-to-measure-jeans-flat\.html/,'evergreen guides must enter the generated sitemap');
 console.log(`PASS: checked ${pages.length} storefront pages, partial Finder input, cleaned pair copy and home contracts`);

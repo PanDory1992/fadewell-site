@@ -2,7 +2,7 @@ import {createHash} from 'node:crypto';
 import {access,copyFile,cp,mkdir,readFile,rm,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
-import {cleanNotes,displayColor,displayOrigin,displaySize,displayTitle,silhouetteProfile} from '../storefront-utils.js';
+import {displayColor,displayOrigin,displaySize,displayTitle,publicPairNotes,silhouetteProfile} from '../storefront-utils.js';
 
 const ROOT=path.resolve(import.meta.dirname,'..');
 const OUT=path.join(ROOT,'_site');
@@ -11,7 +11,9 @@ const API_URL='https://qgjkxtolyhbwpvncwtkn.supabase.co/rest/v1/fadewell_storefr
 const API_KEY='sb_publishable_4I4sJO02Tudp00ALX2xbaQ_DHptnBLb';
 const SITE='https://fadewell.eu';
 const FIELDS='vinted_item_id,title,brand,dna_tagged_size,dna_fit,dna_origin,dna_era,dna_color,garment_type,description_raw,measurements,photos,price_pln,vinted_url,available,sold,first_seen_at,last_seen_at,sold_at,updated_at';
-const STATIC_FILES=['CNAME','archive.html','fadewell-lockup.png','fadewell-wordmark.png','favicon.svg','finder.html','index.html','pair.html','robots.txt','shop.html','storefront-utils.js','storefront.css','storefront.js'];
+const STATIC_FILES=['CNAME','archive.html','fadewell-lockup.png','fadewell-wordmark.png','favicon.svg','finder.html','guides.html','how-to-measure-jeans-flat.html','index.html','jeans-fit-silhouette-guide.html','jeans-waist-size-vs-flat-measurement.html','pair.html','robots.txt','shop.html','storefront-utils.js','storefront.css','storefront.js'];
+const STATIC_HTML=STATIC_FILES.filter(file=>file.endsWith('.html'));
+let ASSETS={css:'/storefront.css',js:'/storefront.js'};
 
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const inlineJson=value=>JSON.stringify(value).replace(/</g,'\\u003c').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');
@@ -94,7 +96,7 @@ function relatedMarkup(products){
 
 export function pairHtml(product,related=[]){
   const title=displayTitle(product);
-  const description=cleanNotes(product.description_raw)||`${title}: measured vintage denim details and a direct Vinted link.`;
+  const description=publicPairNotes(product);
   const canonical=`${SITE}/pairs/${encodeURIComponent(product.vinted_item_id)}/`;
   const image=absolute(product.display_photos?.[0]||product.photos?.[0]||'');
   const schema={
@@ -106,17 +108,30 @@ export function pairHtml(product,related=[]){
   };
   const measurements=Object.entries(product.measurements||{}).filter(([,value])=>value?.cm!=null).map(([key,value])=>`<div class="measure-row"><span>${escapeHtml(key.replaceAll('_',' '))}</span><strong>${escapeHtml(value.cm)} cm</strong></div>`).join('');
   const staticCopy=`<article class="pair-index-copy"><p class="pair-sub">Measured · checked · worn well</p><h1>${escapeHtml(title)}</h1>${image?`<img src="${escapeHtml(product.display_photos?.[0]||product.photos?.[0])}" alt="${escapeHtml(title)}">`:''}<p>${escapeHtml(description)}</p><dl><dt>Brand</dt><dd>${escapeHtml(product.brand||'Not stated')}</dd><dt>Size</dt><dd>${escapeHtml(displaySize(product))}</dd><dt>Silhouette</dt><dd>${escapeHtml(silhouetteProfile(product).label)}</dd><dt>Origin</dt><dd>${escapeHtml(displayOrigin(product))}</dd><dt>Colour</dt><dd>${escapeHtml(displayColor(product))}</dd></dl><div class="measure-table">${measurements}</div>${product.available?`<a href="${escapeHtml(product.vinted_url)}">View and buy on Vinted</a>`:'<p>Sold — retained in the Pair Archive.</p>'}</article>`;
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)} — FADEWELL</title><meta name="description" content="${escapeHtml(description.slice(0,160))}"><link rel="canonical" href="${canonical}"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:type" content="product"><meta property="og:site_name" content="FADEWELL"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description.slice(0,200))}"><meta property="og:url" content="${canonical}">${image?`<meta property="og:image" content="${escapeHtml(image)}"><meta name="twitter:card" content="summary_large_image">`:''}<link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/storefront.css"><script type="application/ld+json">${inlineJson(schema)}</script></head><body data-page="pair"><header data-site-header></header><main class="shell pair-page" data-pair>${staticCopy}</main>${relatedMarkup(related)}<footer data-site-footer></footer><script>globalThis.__FADEWELL_PAIR__=${inlineJson(product)}</script><script type="module" src="/storefront.js"></script></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)} — FADEWELL</title><meta name="description" content="${escapeHtml(description.slice(0,160))}"><link rel="canonical" href="${canonical}"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:type" content="product"><meta property="og:site_name" content="FADEWELL"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description.slice(0,200))}"><meta property="og:url" content="${canonical}">${image?`<meta property="og:image" content="${escapeHtml(image)}"><meta name="twitter:card" content="summary_large_image">`:''}<link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="${ASSETS.css}"><script type="application/ld+json">${inlineJson(schema)}</script></head><body data-page="pair"><header data-site-header></header><main class="shell pair-page" data-pair>${staticCopy}</main>${relatedMarkup(related)}<footer data-site-footer></footer><script>globalThis.__FADEWELL_PAIR__=${inlineJson(product)}</script><script type="module" src="${ASSETS.js}"></script></body></html>`;
 }
 
 async function copyStatic(){
   for(const file of STATIC_FILES)await copyFile(path.join(ROOT,file),path.join(OUT,file));
 }
 
+async function fingerprintAssets(){
+  const css=await readFile(path.join(ROOT,'storefront.css'),'utf8'),js=await readFile(path.join(ROOT,'storefront.js'),'utf8');
+  const cssName=`storefront.${createHash('sha256').update(css).digest('hex').slice(0,12)}.css`;
+  const jsName=`storefront.${createHash('sha256').update(js).digest('hex').slice(0,12)}.js`;
+  ASSETS={css:`/${cssName}`,js:`/${jsName}`};
+  await Promise.all([writeFile(path.join(OUT,cssName),css,'utf8'),writeFile(path.join(OUT,jsName),js,'utf8')]);
+  for(const file of STATIC_HTML){
+    const target=path.join(OUT,file),html=await readFile(target,'utf8');
+    await writeFile(target,html.replace(/(?:\/)?storefront\.css/g,ASSETS.css).replace(/(?:\/)?storefront\.js/g,ASSETS.js),'utf8');
+  }
+}
+
 async function main(){
   await rm(OUT,{recursive:true,force:true});
   await mkdir(OUT,{recursive:true});
   await copyStatic();
+  await fingerprintAssets();
   await optimizeHeroImages();
   const source=await fetchProducts();
   const products=[];
@@ -128,6 +143,10 @@ async function main(){
     {loc:`${SITE}/shop.html`,lastmod:today,changefreq:'daily',priority:'0.9'},
     {loc:`${SITE}/finder.html`,lastmod:today,changefreq:'monthly',priority:'0.8'},
     {loc:`${SITE}/archive.html`,lastmod:today,changefreq:'daily',priority:'0.8'},
+    {loc:`${SITE}/guides.html`,lastmod:today,changefreq:'monthly',priority:'0.7'},
+    {loc:`${SITE}/how-to-measure-jeans-flat.html`,lastmod:today,changefreq:'yearly',priority:'0.7'},
+    {loc:`${SITE}/jeans-waist-size-vs-flat-measurement.html`,lastmod:today,changefreq:'yearly',priority:'0.7'},
+    {loc:`${SITE}/jeans-fit-silhouette-guide.html`,lastmod:today,changefreq:'yearly',priority:'0.7'},
   ];
   for(const product of products){
     const directory=path.join(OUT,'pairs',String(product.vinted_item_id));

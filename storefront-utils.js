@@ -9,9 +9,15 @@ export function cleanNotes(value){
   return before
     .replace(/^\s*[^.!?\n]{1,500}?\bby me(?:\s*[.!?])?(?:\s*[^\p{L}\p{N}\n])*\s*/iu,'')
     .replace(/^\s*Authentic[^\n]*carefully checked and (?:hand-)?measured by me[^\n]*\n?/gim,'')
-    .replace(/^\s*Condition\s*:[^\n]*\n?/gim,'')
     .replace(/\n{3,}/g,'\n\n')
     .trim();
+}
+
+export function publicPairNotes(product){
+  const notes=cleanNotes(product?.description_raw);
+  if(notes)return notes;
+  if(product?.sold)return 'The original condition notes were not recovered for this sold pair. The archived photographs remain the condition record.';
+  return 'Pair-specific condition notes are available on Vinted.';
 }
 
 function matchWaistLength(value){const match=String(value||'').match(/\bW\s*([2-6]\d)\b[\s\S]{0,32}?\bL\s*([2-4]\d)\b/i);return match?`W${match[1]} L${match[2]}`:null}
