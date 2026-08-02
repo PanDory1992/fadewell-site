@@ -43,6 +43,11 @@ assert.doesNotMatch(css,/@keyframes heroCopy(?:Text|Logo)[^}]*translateX/,'hero 
 assert.match(css,/\.hero-cycle-logo\{[^}]*left:50%;top:50%;width:min\(108%,620px\)[^}]*translate\(-50%,-50%\)/,'hero logo must be large and centered');
 assert.match(css,/@media\(max-width:620px\)\{\.hero-cycle-logo\{width:min\(88vw,520px\);max-width:88vw\}/,'mobile hero logo must stay inside the viewport');
 assert.match(app,/fadewell_storefront_products/,'frontend must use the public storefront projection');
+assert.match(app,/\/pairs\/\$\{encodeURIComponent\(product\.vinted_item_id\)\}\//,'cards must use stable, indexable Pair File URLs');
+assert.match(app,/track_fadewell_storefront_event/,'frontend must use the anonymous first-party Supabase funnel');
+assert.match(app,/pair_card_click/,'funnel must measure the list-to-Pair transition');
+assert.match(app,/vinted_click/,'funnel must measure the Pair-to-Vinted transition');
+assert.doesNotMatch(app,/cookie|session[_-]?id|user[_-]?id|fingerprint/i,'analytics must not introduce visitor identifiers');
 assert.doesNotMatch(app,/service[_-]?role/i,'frontend must never contain a service-role credential');
 assert.doesNotMatch(app,/select=\*/,'frontend must request an explicit public field allowlist');
 assert.match(app,/View & buy on Vinted/,'product pages must hand purchase off to Vinted');
@@ -102,4 +107,6 @@ assert.equal(utils.silhouetteProfile({dna_fit:'Regular',measurements:{thigh:{cm:
 
 const allHtml=pages.map(page=>readFileSync(new URL(page,import.meta.url),'utf8')).join('\n');
 assert.doesNotMatch(allHtml,/<form[^>]+action=/i,'storefront must not implement a checkout form');
+assert.match(readFileSync(new URL('pair.html',import.meta.url),'utf8'),/noindex,follow/,'legacy query Pair page must not compete with canonical Pair URLs');
+assert.match(home,/application\/ld\+json/,'home must expose organization structured data');
 console.log(`PASS: checked ${pages.length} storefront pages, partial Finder input, cleaned pair copy and home contracts`);

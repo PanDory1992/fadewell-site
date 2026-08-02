@@ -1,0 +1,50 @@
+name: Build and Deploy Storefront
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '35 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: storefront-pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - id: image-key
+        name: Fingerprint the current public galleries
+        run: node scripts/image-cache-key.mjs >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: .image-cache
+          key: fadewell-images-v2-${{ steps.image-key.outputs.key }}
+          restore-keys: fadewell-images-v2-
+      - run: npm test
+      - name: Build indexable Pair Files and responsive images
+        run: npm run build
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
