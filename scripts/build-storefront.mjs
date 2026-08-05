@@ -11,7 +11,7 @@ const API_URL='https://qgjkxtolyhbwpvncwtkn.supabase.co/rest/v1/fadewell_storefr
 const API_KEY='sb_publishable_4I4sJO02Tudp00ALX2xbaQ_DHptnBLb';
 const SITE='https://fadewell.eu';
 const FIELDS='vinted_item_id,title,brand,dna_tagged_size,dna_fit,dna_origin,dna_era,dna_color,garment_type,description_raw,measurements,photos,price_pln,vinted_url,available,sold,first_seen_at,last_seen_at,sold_at,updated_at';
-const STATIC_FILES=['CNAME','archive.html','fadewell-lockup.png','fadewell-wordmark.png','favicon.svg','finder.html','guides.html','how-to-measure-jeans-flat.html','index.html','jeans-fit-silhouette-guide.html','jeans-waist-size-vs-flat-measurement.html','pair.html','robots.txt','shop.html','storefront-utils.js','storefront.css','storefront.js'];
+const STATIC_FILES=['404.html','CNAME','archive.html','fadewell-lockup.png','fadewell-wordmark.png','favicon.svg','finder.html','guides.html','how-to-measure-jeans-flat.html','index.html','jeans-fit-silhouette-guide.html','jeans-waist-size-vs-flat-measurement.html','pair.html','robots.txt','shop.html','storefront-utils.js','storefront.css','storefront.js'];
 const STATIC_HTML=STATIC_FILES.filter(file=>file.endsWith('.html'));
 let ASSETS={css:'/storefront.css',js:'/storefront.js'};
 

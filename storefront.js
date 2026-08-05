@@ -70,16 +70,21 @@ function card(product,deltas,options={}){
   return `<article class="product-card"><a class="card-photo" data-pair-link data-pair-id="${safe(product.vinted_item_id)}" href="${pairUrl(product)}"><img loading="lazy" decoding="async" src="${safe(photo)}" alt="${safe(displayTitle(product))}"><span class="badge ${product.sold?'sold':''}">${product.sold?'Sold archive':safe(product.garment_type==='JEANS'?'Jeans':'Trousers')}</span></a><div class="card-body"><h3 class="card-title"><a data-pair-link data-pair-id="${safe(product.vinted_item_id)}" href="${pairUrl(product)}">${safe(displayTitle(product))}</a></h3>${deltas?`<ul class="delta-list">${deltas.map(delta=>`<li>${safe(MEASURE_LABELS[delta.key])}: <strong>${delta.delta>0?'+':''}${delta.delta.toFixed(1)} cm</strong></li>`).join('')}</ul>`:''}${showPrice?`<p class="card-price"${product.sold?'':` data-price-pln="${safe(product.price_pln)}"`}>${product.sold?'Reference pair':money(product.price_pln)}</p>`:''}</div></article>`;
 }
 
+const PRODUCT_FIELDS='vinted_item_id,title,brand,dna_tagged_size,dna_fit,dna_origin,dna_era,dna_color,garment_type,description_raw,measurements,photos,price_pln,vinted_url,available,sold,first_seen_at,last_seen_at,sold_at,updated_at';
+
 async function loadProducts(){
-  if(Array.isArray(globalThis.__FADEWELL_PRODUCTS__))return globalThis.__FADEWELL_PRODUCTS__;
+  try{
+    const live=await fetch(`${API_URL}?select=${PRODUCT_FIELDS}&order=updated_at.desc`,{cache:'no-store',headers:{apikey:API_KEY,Authorization:`Bearer ${API_KEY}`}});
+    if(!live.ok)throw new Error(`Live wardrobe ${live.status}`);
+    const rows=await live.json();
+    if(Array.isArray(rows)&&rows.length)return rows;
+    throw new Error('Live wardrobe projection is empty');
+  }catch(error){console.info('Live wardrobe unavailable; using the last published snapshot.',error)}
   try{
     const generated=await fetch('/storefront-data.json',{cache:'no-cache'});
     if(generated.ok)return generated.json();
   }catch(error){console.info('Generated wardrobe snapshot unavailable; using live projection.',error)}
-  const fields='vinted_item_id,title,brand,dna_tagged_size,dna_fit,dna_origin,dna_era,dna_color,garment_type,description_raw,measurements,photos,price_pln,vinted_url,available,sold,first_seen_at,last_seen_at,sold_at,updated_at';
-  const response=await fetch(`${API_URL}?select=${fields}&order=updated_at.desc`,{headers:{apikey:API_KEY,Authorization:`Bearer ${API_KEY}`}});
-  if(!response.ok)throw new Error(`Wardrobe unavailable (${response.status})`);
-  return response.json();
+  throw new Error('Wardrobe unavailable');
 }
 function showError(node,error){node.innerHTML=`<p class="error">The wardrobe could not be loaded just now. <a href="${VINTED_PROFILE}" target="_blank" rel="noopener">Open FADEWELL on Vinted instead →</a></p>`;trackEvent('storefront_error');console.error(error)}
 
@@ -121,7 +126,7 @@ async function renderPair(){
   const node=document.querySelector('[data-pair]');if(!node)return;
   try{
     const id=String(globalThis.__FADEWELL_PAIR__?.vinted_item_id||new URLSearchParams(location.search).get('id')||location.pathname.match(/\/pairs\/(\d+)\/?$/)?.[1]||'');if(!id)throw new Error('Missing pair id');
-    const product=globalThis.__FADEWELL_PAIR__||(await loadProducts()).find(item=>String(item.vinted_item_id)===id);if(!product)throw new Error('Pair not found');
+    const product=(await loadProducts()).find(item=>String(item.vinted_item_id)===id)||globalThis.__FADEWELL_PAIR__;if(!product)throw new Error('Pair not found');
     document.title=`${displayTitle(product)} — FADEWELL`;
     const measures=Object.entries(MEASURE_LABELS).filter(([key])=>m(product,key)!=null).map(([key,label])=>`<div class="measure-row"><span>${label}</span><strong>${m(product,key)} cm</strong></div>`).join('');
     const buy=product.available?`<a class="button primary pair-cta" data-vinted-link data-pair-id="${safe(product.vinted_item_id)}" href="${safe(product.vinted_url)}" target="_blank" rel="noopener">View & buy on Vinted ↗</a>`:`<span class="button pair-cta" aria-disabled="true">Sold — kept in the Pair Archive</span>`;

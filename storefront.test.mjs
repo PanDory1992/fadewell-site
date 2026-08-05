@@ -43,6 +43,8 @@ assert.doesNotMatch(css,/@keyframes heroCopy(?:Text|Logo)[^}]*translateX/,'hero 
 assert.match(css,/\.hero-cycle-logo\{[^}]*left:50%;top:50%;width:min\(108%,620px\)[^}]*translate\(-50%,-50%\)/,'hero logo must be large and centered');
 assert.match(css,/@media\(max-width:620px\)\{\.hero-cycle-logo\{width:min\(88vw,520px\);max-width:88vw\}/,'mobile hero logo must stay inside the viewport');
 assert.match(app,/fadewell_storefront_products/,'frontend must use the public storefront projection');
+assert.match(app,/cache:'no-store'/,'storefront must prefer the live projection without browser caching');
+assert.match(app,/Live wardrobe unavailable; using the last published snapshot/,'storefront must retain a safe published fallback');
 assert.match(app,/\/pairs\/\$\{encodeURIComponent\(product\.vinted_item_id\)\}\//,'cards must use stable, indexable Pair File URLs');
 assert.match(app,/track_fadewell_storefront_event/,'frontend must use the anonymous first-party Supabase funnel');
 assert.match(app,/pair_card_click/,'funnel must measure the list-to-Pair transition');
@@ -114,6 +116,7 @@ assert.doesNotMatch(allHtml,/<form[^>]+action=/i,'storefront must not implement 
 assert.match(readFileSync(new URL('pair.html',import.meta.url),'utf8'),/noindex,follow/,'legacy query Pair page must not compete with canonical Pair URLs');
 assert.match(home,/application\/ld\+json/,'home must expose organization structured data');
 const buildSource=readFileSync(new URL('scripts/build-storefront.mjs',import.meta.url),'utf8');
+assert.match(buildSource,/const STATIC_FILES=\['404\.html'/,'production build must publish the dynamic Pair fallback page');
 assert.match(buildSource,/createHash\('sha256'\)[\s\S]*storefront\.\$\{/,'production assets must use content fingerprints');
 assert.match(buildSource,/how-to-measure-jeans-flat\.html/,'evergreen guides must enter the generated sitemap');
 console.log(`PASS: checked ${pages.length} storefront pages, partial Finder input, cleaned pair copy and home contracts`);
