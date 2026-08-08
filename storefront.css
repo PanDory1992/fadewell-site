@@ -40,10 +40,11 @@ body[data-page=home] .site-footer{margin-top:0}
 @media(max-width:620px){.hero{padding-block:34px;gap:30px}.hero h1{font-size:48px}.page-title h1{font-size:52px}.pair-info h1{font-size:44px}.hero-visual{max-width:100%}.section h2,.finder-results h2,.decoded-head h2,.shipping-inner h2{font-size:40px}.home-products{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.home-products .card-title{font-size:16px}.decoded-grid,.shipping-grid{grid-template-columns:1fr}.pair-details{grid-template-columns:1fr}.shipping-actions{flex-direction:column}.shipping-actions .button{width:100%}.simple-band{letter-spacing:.2em}.card-measures{display:flex;font-size:11px;gap:8px}}
 
 @media(prefers-reduced-motion:no-preference){
-  .hero-img:first-child{animation:heroFadeOne 18s ease-in-out infinite}.hero-img:nth-child(2){animation:heroFadeTwo 18s ease-in-out infinite}.hero-img:nth-child(3){animation:heroFadeThree 18s ease-in-out infinite}
-  @keyframes heroFadeOne{0%,27%{opacity:1}33%,94%{opacity:0}100%{opacity:1}}
-  @keyframes heroFadeTwo{0%,27%{opacity:0}33%,60%{opacity:1}66%,100%{opacity:0}}
-  @keyframes heroFadeThree{0%,60%{opacity:0}66%,94%{opacity:1}100%{opacity:0}}
+  .hero-img:first-child{animation:heroFadeOne 24s ease-in-out infinite}.hero-img:nth-child(2){animation:heroFadeTwo 24s ease-in-out infinite}.hero-img:nth-child(3){animation:heroFadeThree 24s ease-in-out infinite}.hero-img:nth-child(4){animation:heroFadeFour 24s ease-in-out infinite}
+  @keyframes heroFadeOne{0%,21%{opacity:1}25%,96%{opacity:0}100%{opacity:1}}
+  @keyframes heroFadeTwo{0%,21%{opacity:0}25%,46%{opacity:1}50%,100%{opacity:0}}
+  @keyframes heroFadeThree{0%,46%{opacity:0}50%,71%{opacity:1}75%,100%{opacity:0}}
+  @keyframes heroFadeFour{0%,71%{opacity:0}75%,96%{opacity:1}100%{opacity:0}}
 }
 @media(prefers-reduced-motion:reduce){.hero-img:nth-child(n+2){display:none}}
 
