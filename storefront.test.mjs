@@ -70,6 +70,8 @@ assert.match(app,/api\.nbp\.pl\/api\/exchangerates\/rates\/a\/eur/,'EUR switch m
 assert.match(app,/data-gallery-thumbs/,'pair page must use a bounded thumbnail gallery');
 assert.match(app,/data-gallery-hero-prev/,'pair gallery must expose previous-photo navigation');
 assert.match(app,/data-gallery-hero-next/,'pair gallery must expose next-photo navigation');
+assert.match(app,/function measurementDisplay/,'pair pages must preserve explicit measurement ranges in display copy');
+assert.match(app,/value\.display\|\|/,'pair pages must prefer the source display value over a representative numeric midpoint');
 assert.match(app,/selectPhoto\(selected-1\)/,'pair gallery must return one photo at a time, including to the first photo');
 assert.match(app,/selectPhoto\(selected\+1\)/,'pair gallery must advance one photo at a time');
 assert.match(css,/\.pair-hero-photo img\{[^}]*object-fit:contain/,'pair hero photos must never be cropped');
