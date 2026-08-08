@@ -12,7 +12,7 @@ for(const page of pages){
 const home=readFileSync(new URL('index.html',import.meta.url),'utf8');
 assert.match(home,/data-limit="5"/,'home must request five pairs');
 assert.match(home,/Measured &middot; checked &middot; worn well/i,'home must use the approved brand line');
-assert.equal((home.match(/class="hero-img"/g)||[]).length,3,'hero must rotate three images');
+assert.equal((home.match(/class="hero-img"/g)||[]).length,4,'hero must rotate four images');
 assert.match(home,/Sweden, Denmark, Finland/,'shipping countries section must be restored');
 assert.match(home,/hero-message-cycle[\s\S]*Find the pair<\/span><span>that already fits<\/span><span>your life\.<\/span>[\s\S]*fadewell-lockup\.png/,'hero message must use three fixed lines and alternate with the original lockup');
 assert.match(home,/Wardrobe curated by me/i,'home wardrobe label must use approved copy');
