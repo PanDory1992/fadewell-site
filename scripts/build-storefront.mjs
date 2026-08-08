@@ -79,7 +79,7 @@ async function enrichImages(product){
 }
 
 async function optimizeHeroImages(){
-  for(let index=1;index<=4;index+=1){
+  for(let index=1;index<=5;index+=1){
     const source=path.join(ROOT,index===1?'hero.jpg':`hero${index}.jpg`);
     for(const width of [640,1200]){
       const output=path.join(OUT,'generated',`hero-${index}-${width}.webp`);
