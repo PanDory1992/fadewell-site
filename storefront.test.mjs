@@ -46,6 +46,8 @@ assert.match(app,/fadewell_storefront_products/,'frontend must use the public st
 assert.match(app,/cache:'no-store'/,'storefront must prefer the live projection without browser caching');
 assert.match(app,/Live wardrobe unavailable; using the last published snapshot/,'storefront must retain a safe published fallback');
 assert.match(app,/\/pairs\/\$\{encodeURIComponent\(product\.vinted_item_id\)\}\//,'cards must use stable, indexable Pair File URLs');
+assert.match(app,/class="badge size-badge"/,'product cards must show the pair size on the photo');
+assert.match(css,/\.badge\.size-badge\{top:auto;right:12px;bottom:12px;left:auto\}/,'size badge must sit in the opposite bottom-right corner');
 assert.match(app,/track_fadewell_storefront_event/,'frontend must use the anonymous first-party Supabase funnel');
 assert.match(app,/pair_card_click/,'funnel must measure the list-to-Pair transition');
 assert.match(app,/vinted_click/,'funnel must measure the Pair-to-Vinted transition');
@@ -98,6 +100,7 @@ assert.equal(utils.cleanNotes('Carefully selected and measured by me. The denim 
 assert.match(utils.publicPairNotes({sold:true,description_raw:null}),/not recovered/,'a recovered sold pair must disclose missing condition evidence rather than invent it');
 assert.equal(utils.displaySize({title:"Levi's 535 — W30 L30 — Made in UK"}),'W30 L30','size must come from listing text');
 assert.equal(utils.displayFit({title:'Regular straight jeans'}),'Straight');
+assert.equal(utils.displaySize({dna_tagged_size:'W27',title:'Levi’s 806 Mom Jeans – W27 (orig. W30) L32'}),'W27 L32','size display must recover length from title when DNA contains waist only');
 assert.equal(utils.displayFit({title:'Relaxed tapered jeans'}),'Relaxed Tapered');
 assert.equal(utils.displaySize({dna_tagged_size:'W36 L32',title:'Jeans W30 L30'}),'W36 L32','DNA size must win over listing text');
 assert.equal(utils.displayFit({dna_fit:'Relaxed Tapered',title:'Straight jeans'}),'Relaxed Tapered','DNA fit must win over listing text');

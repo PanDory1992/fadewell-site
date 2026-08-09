@@ -22,7 +22,7 @@ export function publicPairNotes(product){
 
 function matchWaistLength(value){const match=String(value||'').match(/\bW\s*([2-6]\d)\b[\s\S]{0,32}?\bL\s*([2-4]\d)\b/i);return match?`W${match[1]} L${match[2]}`:null}
 function cleanDnaSize(value){const text=String(value||'').trim();if(!text)return null;const both=matchWaistLength(text);if(both)return both;const waist=text.match(/\bW\s*([2-6]\d)\b/i);return waist?`W${waist[1]}`:null}
-export function displaySize(product){const dna=cleanDnaSize(product?.dna_tagged_size);if(dna)return dna;const title=String(product?.title||''),description=String(product?.description_raw||'');const both=matchWaistLength(title)||matchWaistLength(description);if(both)return both;const waist=title.match(/\bW\s*([2-6]\d)\b/i);return waist?`W${waist[1]}`:'See measurements'}
+export function displaySize(product){const dna=cleanDnaSize(product?.dna_tagged_size),title=String(product?.title||''),description=String(product?.description_raw||'');const dnaFull=matchWaistLength(product?.dna_tagged_size),full=dnaFull||matchWaistLength(title)||matchWaistLength(description);if(full)return full;if(dna)return dna;const waist=title.match(/\bW\s*([2-6]\d)\b/i);return waist?`W${waist[1]}`:'See measurements'}
 
 export function displayFit(product){
   const dna=String(product?.dna_fit||'').trim();
