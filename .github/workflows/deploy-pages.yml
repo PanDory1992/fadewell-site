@@ -32,16 +32,12 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - id: image-key
-        name: Fingerprint the current public galleries
-        run: node scripts/image-cache-key.mjs >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4
-        with:
-          path: .image-cache
-          key: fadewell-images-v2-${{ steps.image-key.outputs.key }}
-          restore-keys: fadewell-images-v2-
       - run: npm test
-      - name: Build indexable Pair Files and responsive images
+      - name: Build indexable Pair Files from the live projection
+        env:
+          # Vinted's CDN remains the gallery source. Avoid downloading and
+          # re-encoding every photo during a metadata-only refresh.
+          FADEWELL_SKIP_IMAGES: '1'
         run: npm run build
       - id: configure-pages
         uses: actions/configure-pages@v5
