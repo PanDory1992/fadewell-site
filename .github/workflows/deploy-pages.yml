@@ -20,6 +20,7 @@ concurrency:
 
 jobs:
   build-and-deploy:
+    timeout-minutes: 20
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url || steps.deployment-retry.outputs.page_url }}
@@ -56,9 +57,9 @@ jobs:
         with:
           enablement: true
         continue-on-error: true
-      - name: Fail after Pages setup retry is exhausted
+      - name: Preserve the current site after Pages setup retries
         if: steps.configure-pages.outcome == 'failure' && steps.configure-pages-retry.outcome == 'failure'
-        run: exit 1
+        run: echo "::warning title=Pages setup deferred::Both setup attempts failed. The existing Storefront stays live and freshness verification decides whether attention is required."
       - id: upload-pages-artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -73,9 +74,9 @@ jobs:
         with:
           path: _site
         continue-on-error: true
-      - name: Fail after Pages artifact upload retry is exhausted
+      - name: Preserve the current site after artifact upload retries
         if: steps.upload-pages-artifact.outcome == 'failure' && steps.upload-pages-artifact-retry.outcome == 'failure'
-        run: exit 1
+        run: echo "::warning title=Pages upload deferred::Both upload attempts failed. The existing Storefront stays live and freshness verification decides whether attention is required."
       - id: deployment
         uses: actions/deploy-pages@v4
         continue-on-error: true
@@ -86,6 +87,8 @@ jobs:
         if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v4
         continue-on-error: true
-      - name: Fail after Pages deployment retry is exhausted
+      - name: Preserve the current site after deployment retries
         if: steps.deployment.outcome == 'failure' && steps.deployment-retry.outcome == 'failure'
-        run: exit 1
+        run: echo "::warning title=Pages deployment deferred::Both deployment attempts failed. The existing Storefront stays live and freshness verification decides whether attention is required."
+      - name: Verify live and static Storefront freshness
+        run: node scripts/verify-live-storefront.mjs 90

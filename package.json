@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build-storefront.mjs",
-    "test": "node storefront.test.mjs && node scripts/build-storefront.test.mjs"
+    "test": "node storefront.test.mjs && node scripts/build-storefront.test.mjs && node scripts/verify-live-storefront.test.mjs"
   },
   "dependencies": {
     "sharp": "0.35.3"

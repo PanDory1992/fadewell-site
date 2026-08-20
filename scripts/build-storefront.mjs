@@ -36,10 +36,24 @@ export function relatedProducts(product,products,limit=4){
     .map(item=>item.candidate);
 }
 
+const wait=milliseconds=>new Promise(resolve=>setTimeout(resolve,milliseconds));
+
+export async function fetchJsonWithRetries(url,options={},attempts=4,delayMs=2000){
+  let lastError;
+  for(let attempt=1;attempt<=attempts;attempt+=1){
+    try{
+      const response=await fetch(url,options);
+      if(response.ok)return response.json();
+      lastError=new Error(`Request failed: ${response.status}`);
+      if(response.status<500&&response.status!==429)throw lastError;
+    }catch(error){lastError=error}
+    if(attempt<attempts)await wait(delayMs*attempt);
+  }
+  throw lastError;
+}
+
 async function fetchProducts(){
-  const response=await fetch(`${API_URL}?select=${FIELDS}&order=updated_at.desc`,{headers:{apikey:API_KEY,Authorization:`Bearer ${API_KEY}`}});
-  if(!response.ok)throw new Error(`Supabase storefront fetch failed: ${response.status}`);
-  const rows=await response.json();
+  const rows=await fetchJsonWithRetries(`${API_URL}?select=${FIELDS}&order=updated_at.desc`,{headers:{apikey:API_KEY,Authorization:`Bearer ${API_KEY}`}});
   if(!Array.isArray(rows)||!rows.length)throw new Error('Refusing to deploy an empty storefront projection');
   return rows;
 }
