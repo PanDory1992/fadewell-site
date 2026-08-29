@@ -1,11 +1,9 @@
 import assert from 'node:assert/strict';
-import {latestTimestampAgeMinutes} from './verify-live-storefront.mjs';
+import {deploymentMarkerMatches} from './verify-live-storefront.mjs';
 
 const now=Date.parse('2026-08-20T12:00:00Z');
-assert.equal(latestTimestampAgeMinutes([
-  {updated_at:'2026-08-20T10:00:00Z'},
-  {updated_at:'2026-08-20T11:45:00Z'},
-],now),15);
-assert.throws(()=>latestTimestampAgeMinutes([],now),/empty/);
-assert.throws(()=>latestTimestampAgeMinutes([{updated_at:null}],now),/freshness/);
-console.log('PASS: Storefront freshness watchdog');
+assert.equal(deploymentMarkerMatches({deployment_token:'run-1',generated_at:'2026-08-20T11:55:00Z'},'run-1',now),true);
+assert.equal(deploymentMarkerMatches({deployment_token:'older-run',generated_at:'2026-08-20T11:55:00Z'},'run-1',now),false);
+assert.equal(deploymentMarkerMatches({deployment_token:'run-1',generated_at:'2026-08-20T10:00:00Z'},'run-1',now),false);
+assert.equal(deploymentMarkerMatches(null,'run-1',now),false);
+console.log('PASS: Storefront deployment watchdog');

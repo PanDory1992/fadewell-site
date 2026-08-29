@@ -151,6 +151,11 @@ async function main(){
   const products=[];
   for(const product of source)products.push(await enrichImages(product));
   await writeFile(path.join(OUT,'storefront-data.json'),JSON.stringify(products),'utf8');
+  await writeFile(path.join(OUT,'deployment-health.json'),JSON.stringify({
+    deployment_token:process.env.FADEWELL_DEPLOY_TOKEN||'local-build',
+    generated_at:new Date().toISOString(),
+    product_count:products.length,
+  }),'utf8');
   const today=new Date().toISOString().slice(0,10);
   const urls=[
     {loc:`${SITE}/`,lastmod:today,changefreq:'daily',priority:'1.0'},

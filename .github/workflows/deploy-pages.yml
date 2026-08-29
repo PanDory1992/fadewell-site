@@ -38,6 +38,7 @@ jobs:
           # Vinted's CDN remains the gallery source. Avoid downloading and
           # re-encoding every photo during a metadata-only refresh.
           FADEWELL_SKIP_IMAGES: '1'
+          FADEWELL_DEPLOY_TOKEN: ${{ github.run_id }}-${{ github.run_attempt }}
         run: npm run build
       - id: configure-pages
         uses: actions/configure-pages@v5
@@ -86,5 +87,7 @@ jobs:
       - name: Preserve the current site after deployment retries
         if: steps.deployment.outcome == 'failure' && steps.deployment-retry.outcome == 'failure'
         run: echo "::warning title=Pages deployment deferred::Both deployment attempts failed. The existing Storefront stays live and freshness verification decides whether attention is required."
-      - name: Verify live and static Storefront freshness
-        run: node scripts/verify-live-storefront.mjs 90
+      - name: Verify this Storefront deployment is live
+        env:
+          FADEWELL_DEPLOY_TOKEN: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: node scripts/verify-live-storefront.mjs "$FADEWELL_DEPLOY_TOKEN" 120
