@@ -1,0 +1,29 @@
+name: Refresh Lump data
+
+on:
+  schedule:
+    - cron: '15 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - run: node scripts/refresh-lump-data.mjs
+        env:
+          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+      - run: |
+          git diff --quiet || (
+            git config user.name 'fadewell-data-bot'
+            git config user.email 'actions@github.com'
+            git add lump-live.json
+            git commit -m 'Refresh Lump source data'
+            git push
+          )

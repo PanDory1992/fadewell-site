@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Lump — Warszawski radar secondhandów · FADEWELL</title>
+  <meta name="description" content="Mapa warszawskich secondhandów: ceny, godziny, źródła i świeżość danych.">
+  <meta name="theme-color" content="#24333d"><link rel="icon" href="favicon.svg"><link rel="stylesheet" href="storefront.css"><link rel="stylesheet" href="lump.css">
+</head>
+<body data-page="lump">
+  <header class="lump-header"><a class="wordmark" href="/" aria-label="FADEWELL home"><img src="fadewell-wordmark.png" alt="FADEWELL"></a><nav><a href="#mapa">Mapa</a><a href="#lista">Lista sklepów</a><a class="lump-return" href="/">Wróć do FADEWELL ↗</a></nav></header>
+  <main>
+    <section class="lump-hero shell"><p class="eyebrow">FADEWELL / WARSZAWA</p><h1>Lump.<br><span>Warszawski radar</span><br>secondhandów.</h1><p class="lump-lede">Bez zgadywania. Ceny, godziny i źródła pokazujemy tylko z datą ich weryfikacji.</p><a class="button primary" href="#mapa">Zobacz mapę</a></section>
+    <section class="lump-status shell" aria-label="Stan danych"><article><small>Punkty w katalogu</small><strong data-total>—</strong><span>Warszawa</span></article><article><small>Ceny potwierdzone dziś</small><strong data-confirmed>—</strong><span>źródło A</span></article><article><small>Audyt startowy</small><strong data-audit-date>—</strong><span>zawsze pokażemy świeżość</span></article></section>
+    <section class="shell lump-note"><strong>Co oznacza „live”?</strong><span>Automatycznie aktualizowane źródła dostają bieżącą datę. Brak aktualnej ceny to informacja, nie luka do wypełnienia domysłem.</span></section>
+    <section class="shell lump-workspace" id="mapa">
+      <div class="lump-toolbar"><div><p class="eyebrow">Znajdź punkt</p><h2>Mapa i lista pracują razem.</h2></div><button class="button small" type="button" data-clear hidden>Usuń wybór</button></div>
+      <form class="lump-filters" data-filters><label>Szukaj<input name="q" type="search" placeholder="np. Targowa, Wola, Anydays"></label><label>Dzielnica<select name="district"><option value="">Wszystkie</option></select></label><label>Cena<select name="price"><option value="">Dowolna</option><option value="confirmed">Potwierdzona dziś</option><option value="weight">Za kilogram</option><option value="piece">Za sztukę</option><option value="individual">Indywidualna</option></select></label><label>Źródło<select name="confidence"><option value="">A–C</option><option value="A">A — oficjalne, bieżące</option><option value="B">B — oficjalne, bez ceny dnia</option><option value="C">C — katalog / lokalne źródło</option></select></label><label class="lump-checkbox"><input name="open" type="checkbox"> Pokaż otwarte teraz</label></form>
+      <div class="lump-map" data-map aria-label="Schemat dzielnic Warszawy z punktami secondhandów"></div><p class="map-caption">Schemat dzielnic, nie mapa nawigacyjna. Każdy punkt prowadzi do dokładnej wizytówki Google Maps.</p>
+      <article class="place-panel" data-panel aria-live="polite"><p class="eyebrow">Szczegóły punktu</p><p>Wybierz sklep na mapie lub w tabeli.</p></article>
+    </section>
+    <section class="shell lump-list-section" id="lista"><div class="list-heading"><div><p class="eyebrow">Katalog</p><h2>Lista sklepów</h2></div><p data-count>—</p></div><div class="lump-table-wrap"><table><thead><tr><th>Sklep</th><th>Dzielnica</th><th>Cena</th><th>Godziny</th><th>Źródło</th><th></th></tr></thead><tbody data-list></tbody></table></div></section>
+  </main>
+  <footer class="lump-footer"><div class="shell"><img src="fadewell-wordmark.png" alt="FADEWELL"><p>Lump to niezależny katalog dla Warszawy. Dane źródłowe i ich świeżość są ważniejsze niż pozorna kompletność.</p></div></footer>
+  <script type="module" src="lump.js"></script>
+</body>
+</html>
