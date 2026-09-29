@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-09-28T11:44:12.970Z",
+  "updatedAt": "2026-09-29T11:23:49.666Z",
   "prices": {
-    "warsaw-3": "4 zł/szt.; LUX 99 zł/kg",
-    "warsaw-4": "109 zł/kg; LUX 159 zł/kg",
-    "warsaw-5": "7 zł/szt.; LUX 89 zł/kg",
-    "warsaw-6": "89 zł/kg; LUX 139 zł/kg",
-    "warsaw-7": "49 zł/kg; LUX 105 zł/kg"
+    "warsaw-3": "109 zł/kg; LUX 159 zł/kg",
+    "warsaw-4": "105 zł/kg; LUX 155 zł/kg",
+    "warsaw-5": "4 zł/szt.; LUX 79 zł/kg",
+    "warsaw-6": "79 zł/kg; LUX 135 zł/kg",
+    "warsaw-7": "9 zł/szt.; LUX 99 zł/kg"
   },
   "googleHours": {}
 }
