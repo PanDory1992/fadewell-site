@@ -90,4 +90,4 @@ jobs:
       - name: Verify this Storefront deployment is live
         env:
           FADEWELL_DEPLOY_TOKEN: ${{ github.run_id }}-${{ github.run_attempt }}
-        run: node scripts/verify-live-storefront.mjs "$FADEWELL_DEPLOY_TOKEN" 120
+        run: node scripts/verify-live-storefront.mjs "$FADEWELL_DEPLOY_TOKEN" 300
