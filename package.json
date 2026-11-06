@@ -7,6 +7,6 @@
     "test": "node storefront.test.mjs && node scripts/build-storefront.test.mjs && node scripts/verify-live-storefront.test.mjs"
   },
   "dependencies": {
-    "sharp": "0.35.3"
+    "sharp": "0.35.5"
   }
 }
